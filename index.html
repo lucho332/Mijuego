@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inglés Infalible 1.0 - Full DB</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .card-match { transition: all 0.2s; cursor: pointer; }
+    .card-match:active { transform: scale(0.95); }
+    .tense-success { animation: pop 0.4s ease; border-color: #10b981 !important; background-color: #ecfdf5 !important; }
+    @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    .hidden { display: none; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    .tab-active { background-color: #4f46e5 !important; color: white !important; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+    
+    /* Animaciones para el chat */
+    .chat-bubble { transition: all 0.3s ease; opacity: 0.5; filter: grayscale(100%); }
+    .chat-active { opacity: 1; filter: grayscale(0%); transform: scale(1.02); }
+    .chat-done { opacity: 1; filter: grayscale(0%); }
+    
+    /* Animaciones Arcade Avanzadas */
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-4px); } 100% { transform: translateY(0px); } }
+    @keyframes spin-coin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+    @keyframes zap { 0% { opacity: 0.8; filter: brightness(1); } 50% { opacity: 1; filter: brightness(1.5); } 100% { opacity: 0.8; filter: brightness(1); } }
+    @keyframes fire { 0% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 10px red); } 50% { transform: scale(1.1) translateY(-2px); filter: drop-shadow(0 0 20px orange); } 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 10px red); } }
+    
+    .coin-anim { animation: float 1.5s ease-in-out infinite; }
+    .spin-anim { animation: spin-coin 1.5s linear infinite; }
+    .zap-anim { animation: zap 0.1s linear infinite; }
+    .fire-anim { animation: fire 0.3s ease-in-out infinite; }
+    .retro-font { font-family: 'Courier New', Courier, monospace; font-weight: 900; }
+    
+    /* Animaciones Zombies VS Plants */
+    .zombie-walk { animation: walk 1.5s infinite ease-in-out; }
+    @keyframes walk { 0%, 100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(8deg) translateY(-4px); } }
+    .pea-shoot { animation: shoot 0.2s linear forwards; }
+    @keyframes shoot { 0% { left: 10%; opacity: 1; } 100% { left: 90%; opacity: 0; } }
+    .bg-yard { background: repeating-linear-gradient(0deg, #166534, #166534 100px, #14532d 100px, #14532d 200px); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+
+  <header class="bg-white border-b sticky top-0 z-50 p-4 shadow-sm">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+      <div>
+        <h1 class="font-black text-indigo-900 text-xl tracking-tight uppercase">Inglés Infalible 1.0</h1>
+        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Base de Datos: +600 Oraciones</p>
+      </div>
+      <div id="scoreDisplay" class="bg-indigo-600 text-white px-4 py-1.5 rounded-full font-black text-sm shadow-md">Puntos: 0</div>
+    </div>
+  </header>
+
+  <nav class="max-w-6xl mx-auto p-4 flex flex-wrap gap-2 justify-center">
+    <button onclick="showTab('match')" id="btn-match" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-500 shadow-sm border">Memoria</button>
+    <button onclick="showTab('pronounce')" id="btn-pronounce" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-500 shadow-sm border">Pronunciar</button>
+    <button onclick="showTab('tenses')" id="btn-tenses" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-500 shadow-sm border">16 Tiempos</button>
+    <button onclick="showTab('conv')" id="btn-conv" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-500 shadow-sm border">Conversaciones</button>
+    <button onclick="showTab('arcade')" id="btn-arcade" class="tab-btn px-4 py-2 rounded-xl font-black bg-amber-50 text-amber-600 shadow-sm border-2 border-amber-200 hover:scale-105 transition-all">Mundos 🍄</button>
+    <button onclick="showTab('zombies')" id="btn-zombies" class="tab-btn px-4 py-2 rounded-xl font-black bg-lime-50 text-lime-700 shadow-sm border-2 border-lime-200 hover:scale-105 transition-all">Zombies 🧟</button>
+    <button onclick="showTab('comp')" id="btn-comp" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-500 shadow-sm border">Comparativos</button>
+  </nav>
+
+  <main class="max-w-6xl mx-auto p-4">
+
+    <!-- SECCIÓN MEMORIA -->
+    <section id="match-section" class="tab-content hidden">
+      <div id="match-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 mb-6"></div>
+      <div class="flex justify-center mt-4">
+        <button onclick="initMatch()" class="bg-indigo-100 px-6 py-2 rounded-lg font-bold text-indigo-700 hover:bg-indigo-200">Mezclar de nuevo</button>
+      </div>
+    </section>
+
+    <!-- SECCIÓN PRONUNCIAR -->
+    <section id="pronounce-section" class="tab-content hidden max-w-md mx-auto">
+      <div id="p-cat-container" class="flex flex-wrap gap-2 justify-center mb-6"></div>
+      <div class="bg-white p-8 rounded-3xl shadow-xl border text-center space-y-6">
+        <div class="h-48 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden">
+          <img id="p-img" src="" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x300?text=No+Image';">
+        </div>
+        <h2 id="p-word" class="text-4xl font-black text-indigo-900 uppercase">...</h2>
+        <div class="flex justify-center gap-4">
+          <button onclick="speakWord()" class="w-16 h-16 bg-slate-100 rounded-full text-2xl hover:bg-slate-200">🔊</button>
+          <button onclick="startVoice('pronounce')" class="w-16 h-16 bg-indigo-600 text-white rounded-full text-2xl shadow-lg hover:bg-indigo-700">🎤</button>
+        </div>
+        <p id="p-feedback" class="text-sm font-bold text-slate-400 min-h-[20px]">...</p>
+        <div class="flex justify-between items-center pt-4 border-t">
+          <button onclick="changeWord(-1)" class="text-xs font-bold text-slate-400">Anterior</button>
+          <span id="p-count" class="text-xs font-black text-indigo-500">0/0</span>
+          <button onclick="changeWord(1)" class="text-xs font-bold text-indigo-600">Siguiente</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 16 TIEMPOS -->
+    <section id="tenses-section" class="tab-content hidden">
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="md:col-span-1 bg-white p-4 rounded-2xl border h-[600px] overflow-y-auto custom-scrollbar shadow-sm" id="t-list"></div>
+        <div class="md:col-span-3 space-y-4">
+          <div class="bg-white p-8 rounded-3xl shadow-lg border">
+            <div class="flex justify-between items-center mb-6">
+              <div class="flex items-center gap-3">
+                <div id="t-icon-box" class="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-2xl">🗓️</div>
+                <div>
+                  <h3 id="t-title" class="text-xl font-black text-indigo-900 leading-tight">...</h3>
+                  <span id="t-ex-count" class="text-[10px] font-bold text-slate-400 uppercase">Ejemplo 1 de X</span>
+                </div>
+              </div>
+              <button onclick="speakTense()" class="w-12 h-12 bg-slate-100 rounded-full text-xl hover:bg-slate-200">🔊</button>
+            </div>
+            
+            <div id="t-scrambled" class="flex flex-wrap gap-2 p-4 bg-slate-50 rounded-xl border-2 border-dashed mb-6 min-h-[80px] items-center"></div>
+            
+            <div class="relative">
+                <div id="t-ordered" class="flex flex-wrap gap-2 p-6 bg-indigo-50/50 rounded-2xl border-2 border-indigo-100 min-h-[120px] items-center mb-6 transition-all"></div>
+                <div id="t-listening-indicator" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-[10px] px-3 py-1 rounded-full font-black uppercase hidden">Escuchando...</div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button id="btn-check-tense" onclick="checkTense()" class="flex-1 bg-indigo-600 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition-all">Verificar Orden</button>
+              <button id="btn-voice-tense" onclick="startVoice('tense')" class="hidden flex-1 bg-emerald-500 text-white py-4 rounded-xl font-bold shadow-lg hover:bg-emerald-600 transition-all">🎤 ¡Ahora Dilo!</button>
+              <button onclick="nextTenseExample()" class="px-8 py-4 bg-slate-800 text-white rounded-xl font-bold hover:bg-slate-900">Siguiente Oración</button>
+            </div>
+            <p id="t-feedback" class="text-center mt-6 text-sm font-bold text-slate-400 italic min-h-[20px]">...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CONVERSACIONES -->
+    <section id="conv-section" class="tab-content hidden">
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- Lista de chats adaptada en altura -->
+        <div class="md:col-span-1 bg-white p-4 rounded-2xl border h-[75vh] min-h-[600px] overflow-y-auto custom-scrollbar shadow-sm" id="cv-list"></div>
+        <div class="md:col-span-2 space-y-4">
+          <!-- Caja del chat adaptada en altura -->
+          <div class="bg-white p-6 rounded-3xl shadow-lg border h-[75vh] min-h-[600px] flex flex-col">
+            <div class="flex justify-between items-center mb-4 pb-4 border-b">
+              <div>
+                <h3 id="cv-title" class="text-xl font-black text-indigo-900">Selecciona un chat</h3>
+                <p id="cv-subtitle" class="text-xs text-slate-500 font-bold uppercase">...</p>
+              </div>
+              <div id="cv-role-selector" class="hidden flex bg-slate-100 rounded-lg p-1">
+                <button onclick="setConvRole('A')" id="btn-role-A" class="px-4 py-1 text-sm font-bold rounded-md transition-all text-slate-500">Rol A</button>
+                <button onclick="setConvRole('B')" id="btn-role-B" class="px-4 py-1 text-sm font-bold rounded-md transition-all text-slate-500">Rol B</button>
+              </div>
+            </div>
+            <!-- Scroll suave añadido (scroll-smooth) -->
+            <div id="cv-chat-box" class="flex-1 bg-slate-50 rounded-xl p-4 overflow-y-auto flex flex-col space-y-3 custom-scrollbar scroll-smooth">
+              <div class="text-center text-slate-400 font-bold mt-20">👈 Selecciona una conversación y tu rol.</div>
+            </div>
+            <div class="mt-4 pt-4 border-t relative flex items-center justify-center min-h-[60px]">
+               <div id="cv-listening-indicator" class="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-[10px] px-3 py-1 rounded-full font-black uppercase hidden shadow-md">Escuchando...</div>
+               <button id="cv-mic-btn" onclick="startConvVoice()" class="hidden w-16 h-16 bg-emerald-500 text-white rounded-full text-2xl shadow-lg hover:bg-emerald-600 transition-all flex items-center justify-center animate-pulse">🎤</button>
+               <p id="cv-feedback" class="text-sm font-bold text-slate-400 hidden">...</p>
+               <button id="cv-reset-btn" onclick="resetConversation()" class="hidden absolute right-0 px-4 py-2 bg-slate-200 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-300">Reiniciar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NUEVA SECCIÓN MUNDOS ARCADE -->
+    <section id="arcade-section" class="tab-content hidden max-w-4xl mx-auto">
+      <div class="bg-white p-6 rounded-[2.5rem] shadow-xl border text-center space-y-4 relative overflow-hidden">
+        
+        <!-- Overlay Modal -->
+        <div id="ar-modal" class="hidden absolute inset-0 bg-slate-900/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-6 sm:p-8">
+            <!-- CAJA DE TRADUCCIÓN AÑADIDA PARA ARCADE -->
+            <div id="ar-m-translation-box" class="w-full max-w-[320px] mb-4 rounded-xl border-2 border-indigo-700/50 shadow-[0_0_15px_rgba(79,70,229,0.2)] bg-slate-800 p-4 text-center hidden flex-shrink-0">
+                <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-widest block mb-1">Encuentra la frase en inglés para:</span>
+                <p id="ar-m-translation" class="text-white text-base sm:text-lg font-black leading-tight">Traduciendo... ⏳</p>
+            </div>
+
+            <div id="ar-m-icon" class="text-6xl mb-4 coin-anim drop-shadow-lg">❓</div>
+            <p id="ar-m-q" class="text-white retro-font text-base sm:text-lg mb-6 text-center leading-relaxed">...</p>
+            <div id="ar-m-options" class="w-full max-w-[320px] flex flex-col gap-3"></div>
+        </div>
+
+        <div class="flex justify-between items-center px-4 mb-2 border-b pb-3">
+          <div class="text-left">
+              <h2 id="ar-title" class="text-lg font-black text-indigo-900 retro-font uppercase tracking-wider">WORLD 1-1</h2>
+              <p id="ar-subtitle" class="text-[10px] text-indigo-500 font-bold uppercase tracking-widest">Present Simple</p>
+          </div>
+          <div class="flex gap-2 items-center">
+              <button onclick="toggleMusic()" id="btn-mute" class="bg-slate-100 hover:bg-slate-200 w-10 h-10 rounded-full flex items-center justify-center text-lg shadow-sm border border-slate-200 transition-all">🔊</button>
+              <span id="ar-lives" class="bg-red-100 text-red-600 px-3 py-1.5 rounded-full font-bold text-xs shadow-sm border border-red-200 retro-font">❤️ 3</span>
+          </div>
+        </div>
+        
+        <!-- Contenedor con tamaño fluido (Cámara Viewport Ampliada) -->
+        <div id="ar-bg-container" class="block overflow-hidden rounded-xl shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] relative mx-auto w-full h-[400px] transition-colors duration-500 bg-sky-400">
+            <!-- Grid del juego -->
+            <div id="ar-board" class="grid gap-0 absolute transition-transform duration-300 ease-out z-0 origin-top-left" style="left: 0; top: 0;">
+                <!-- Generado por JS -->
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div class="grid grid-cols-3 gap-2 w-48 mx-auto mt-6 relative z-10">
+            <div></div>
+            <button onclick="moveArcade(0, -1)" class="bg-slate-100 active:bg-slate-300 p-4 rounded-xl shadow-sm border-b-4 border-slate-300 flex items-center justify-center text-xl hover:translate-y-1 hover:border-b-0 transition-all">⬆️</button>
+            <div></div>
+            <button onclick="moveArcade(-1, 0)" class="bg-slate-100 active:bg-slate-300 p-4 rounded-xl shadow-sm border-b-4 border-slate-300 flex items-center justify-center text-xl hover:translate-y-1 hover:border-b-0 transition-all">⬅️</button>
+            <button onclick="moveArcade(0, 1)" class="bg-slate-100 active:bg-slate-300 p-4 rounded-xl shadow-sm border-b-4 border-slate-300 flex items-center justify-center text-xl hover:translate-y-1 hover:border-b-0 transition-all">⬇️</button>
+            <button onclick="moveArcade(1, 0)" class="bg-slate-100 active:bg-slate-300 p-4 rounded-xl shadow-sm border-b-4 border-slate-300 flex items-center justify-center text-xl hover:translate-y-1 hover:border-b-0 transition-all">➡️</button>
+        </div>
+        <p class="text-[10px] text-slate-400 font-bold uppercase mt-2">Misiones: ❓ 👾 | Trampas: ⚡ 🔥 👻</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN ZOMBIES VS PLANTS -->
+    <section id="zombies-section" class="tab-content hidden max-w-4xl mx-auto">
+      <div class="bg-stone-900 p-3 sm:p-6 rounded-[2rem] shadow-2xl border-4 border-stone-700 relative overflow-hidden">
+        
+        <div class="flex flex-col sm:flex-row justify-between items-center bg-stone-800 text-white p-4 rounded-xl mb-4 shadow-inner border border-stone-600">
+          <div class="text-center sm:text-left mb-3 sm:mb-0">
+              <h2 id="z-title" class="text-xl font-black text-lime-400 uppercase tracking-wider">NIVEL 1</h2>
+              <p id="z-subtitle" class="text-xs text-lime-200 font-bold uppercase tracking-widest">Present Simple</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3 items-center">
+              <button onclick="toggleZMusic()" id="btn-z-mute" class="bg-stone-700 hover:bg-stone-600 w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-lg shadow-sm border border-stone-500 transition-all">🔊</button>
+              <span id="z-lives" class="bg-red-900/50 text-red-400 px-4 py-2 rounded-lg font-bold shadow-sm border border-red-800 text-sm">❤️ 3</span>
+              <span id="z-progress" class="bg-stone-700 text-stone-200 px-4 py-2 rounded-lg font-bold shadow-sm border border-stone-600 text-sm">🧟 0/10</span>
+              <span id="z-combo" class="hidden text-amber-400 font-black text-sm animate-pulse drop-shadow-md bg-stone-800 px-3 py-1.5 rounded-lg border border-amber-600">🔥 COMBO x2!</span>
+              <button onclick="zUseBomb()" id="btn-bomb" class="bg-orange-600 hover:bg-orange-500 text-white px-3 py-2 rounded-lg font-bold shadow-lg border border-orange-800 transition-all text-xs sm:text-sm flex items-center gap-2 cursor-not-allowed opacity-50">
+                  💣 Cherry Bomb <span id="bomb-label" class="text-[10px] bg-orange-900/80 px-2 py-0.5 rounded-full">Faltan 300 pts</span>
+              </button>
+          </div>
+        </div>
+
+        <div id="z-yard" class="relative h-[400px] w-full bg-yard border-4 border-stone-800 rounded-xl overflow-hidden shadow-inner cursor-crosshair">
+            <div class="absolute left-0 top-0 bottom-0 w-16 sm:w-20 bg-stone-900/60 border-r-4 border-stone-800 flex flex-col justify-around items-center z-10 shadow-[5px_0_15px_rgba(0,0,0,0.5)] py-4">
+                <div class="text-3xl sm:text-4xl drop-shadow-lg cursor-pointer hover:scale-110 transition-transform active:scale-90" onclick="this.innerText='😎'; setTimeout(()=>this.innerText='🌻', 800)">🌻</div>
+                <div class="text-3xl sm:text-4xl drop-shadow-lg cursor-pointer hover:scale-110 transition-transform active:scale-90" onclick="this.innerText='😎'; setTimeout(()=>this.innerText='🌻', 800)">🌻</div>
+                <div class="text-3xl sm:text-4xl drop-shadow-lg cursor-pointer hover:scale-110 transition-transform active:scale-90" onclick="this.innerText='😎'; setTimeout(()=>this.innerText='🌻', 800)">🌻</div>
+                <div class="text-3xl sm:text-4xl drop-shadow-lg cursor-pointer hover:scale-110 transition-transform active:scale-90" onclick="this.innerText='😎'; setTimeout(()=>this.innerText='🌻', 800)">🌻</div>
+            </div>
+            
+            <div id="z-damage-overlay" class="absolute inset-0 bg-red-600/0 z-30 pointer-events-none transition-colors duration-200"></div>
+            <div id="z-container" class="absolute inset-0 z-20"></div>
+            <div id="z-projectiles" class="absolute inset-0 z-20 pointer-events-none"></div>
+        </div>
+
+        <div id="z-modal" class="hidden absolute inset-0 bg-stone-900/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4 sm:p-8 rounded-[2rem]">
+            <!-- CONTENEDOR DE TRADUCCIÓN AÑADIDO (Reemplaza a la imagen) -->
+            <div id="z-m-translation-box" class="w-full max-w-lg mb-4 rounded-xl border-2 border-lime-700/50 shadow-[0_0_15px_rgba(34,197,94,0.2)] bg-stone-800 p-4 text-center hidden flex-shrink-0">
+                <span class="text-[10px] text-lime-500 font-bold uppercase tracking-widest block mb-1">Encuentra la frase en inglés para:</span>
+                <p id="z-m-translation" class="text-white text-lg sm:text-xl font-black">Traduciendo... ⏳</p>
+            </div>
+            
+            <div id="z-m-icon" class="text-7xl mb-4 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]">🧟</div>
+            <p id="z-m-q" class="text-white font-mono text-sm sm:text-base mb-4 text-center leading-relaxed font-bold">...</p>
+            <div id="z-m-options" class="w-full max-w-lg flex flex-col gap-2 overflow-y-auto custom-scrollbar"></div>
+        </div>
+        
+        <p class="text-xs text-stone-400 font-bold uppercase mt-4 text-center">¡Haz clic sobre los zombies para atacarlos, y atrapa los soles (☀️) para puntos!</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN COMPARATIVOS -->
+    <section id="comp-section" class="tab-content hidden max-w-2xl mx-auto">
+      <div class="bg-white p-8 rounded-[2.5rem] shadow-xl border text-center space-y-6">
+        <span class="bg-indigo-100 text-indigo-700 px-4 py-1 rounded-full text-[10px] font-black uppercase" id="c-type">Comparative</span>
+        <h2 id="c-sentence" class="text-3xl font-black text-slate-800 leading-snug">...</h2>
+        <p id="c-adj" class="text-indigo-400 font-bold italic text-lg">[ Adjective ]</p>
+        <div id="c-options" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+        <div class="flex justify-between items-center px-2">
+            <span id="c-progress" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pregunta 1 de X</span>
+            <button id="btn-next-comp" onclick="nextComp()" class="w-2/3 bg-slate-100 text-slate-400 py-5 rounded-2xl font-black transition-all" disabled>SIGUIENTE</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // --- DATOS ---
+    const VOCAB = {
+      'Animals': [
+        {en:'Elephant', icon:'🐘', img:'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?w=400'},
+        {en:'Lion', icon:'🦁', img:'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400'},
+        {en:'Giraffe', icon:'🦒', img:'https://images.unsplash.com/photo-1545463910-d5a8647038df?w=400'},
+        {en:'Tiger', icon:'🐯', img:'https://images.unsplash.com/photo-1508061461508-cb18c242f556?w=400'},
+        {en:'Dolphin', icon:'🐬', img:'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?w=400'},
+        {en:'Monkey', icon:'🐒', img:'https://images.unsplash.com/photo-1540448051910-09cf84e38cb6?w=400'}
+      ],
+      'Food': [
+        {en:'Pizza', icon:'🍕', img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'},
+        {en:'Hamburger', icon:'🍔', img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400'},
+        {en:'Apple', icon:'🍎', img:'https://images.unsplash.com/photo-1560806887-1e4cd0b6fac6?w=400'},
+        {en:'Banana', icon:'🍌', img:'https://images.unsplash.com/photo-1528825871115-3581a5387919?w=400'},
+        {en:'Orange', icon:'🍊', img:'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=400'},
+        {en:'Cheese', icon:'🧀', img:'https://images.unsplash.com/photo-1486297678162-eb2a19b0a32d?w=400'}
+      ],
+      'Jobs': [
+        {en:'Doctor', icon:'👨‍⚕️', img:'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400'},
+        {en:'Teacher', icon:'👨‍🏫', img:'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=400'},
+        {en:'Police', icon:'👮', img:'https://images.unsplash.com/photo-1514050518603-5cd2e23bd9e9?w=400'},
+        {en:'Firefighter', icon:'🧑🚒', img:'https://images.unsplash.com/photo-1611005273516-a19c11867dd1?w=400'},
+        {en:'Chef', icon:'🧑🍳', img:'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400'},
+        {en:'Pilot', icon:'🧑✈️', img:'https://images.unsplash.com/photo-1559599238-308793637427?w=400'}
+      ],
+      'Nature': [
+        {en:'Tree', icon:'🌳', img:'https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=400'},
+        {en:'Flower', icon:'🌻', img:'https://images.unsplash.com/photo-1490750967868-88cb4ecb07cb?w=400'},
+        {en:'Mountain', icon:'⛰️', img:'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400'},
+        {en:'River', icon:'🏞️', img:'https://images.unsplash.com/photo-1437482078695-73f5bf6e6c53?w=400'},
+        {en:'Ocean', icon:'🌊', img:'https://images.unsplash.com/photo-1439405326854-014607f694d7?w=400'},
+        {en:'Sun', icon:'☀️', img:'https://images.unsplash.com/photo-1533315802263-d49d970e5b7b?w=400'}
+      ],
+      'Places': [
+        {en:'Hospital', icon:'🏥', img:'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400'},
+        {en:'School', icon:'🏫', img:'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=400'},
+        {en:'Bank', icon:'🏦', img:'https://images.unsplash.com/photo-1501167783852-03f444c10214?w=400'},
+        {en:'Park', icon:'🏞️', img:'https://images.unsplash.com/photo-1519331379826-f10be5486c6f?w=400'},
+        {en:'Restaurant', icon:'🍽️', img:'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400'},
+        {en:'Airport', icon:'✈️', img:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400'}
+      ],
+      'Transport': [
+        {en:'Car', icon:'🚗', img:'https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400'},
+        {en:'Bus', icon:'🚌', img:'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=400'},
+        {en:'Train', icon:'🚆', img:'https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=400'},
+        {en:'Airplane', icon:'✈️', img:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400'},
+        {en:'Bicycle', icon:'🚲', img:'https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=400'},
+        {en:'Boat', icon:'⛵', img:'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400'}
+      ],
+      'Weather': [
+        {en:'Sunny', icon:'☀️', img:'https://images.unsplash.com/photo-1601297183314-c09d37160eb8?w=400'},
+        {en:'Rainy', icon:'🌧️', img:'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?w=400'},
+        {en:'Cloudy', icon:'☁️', img:'https://images.unsplash.com/photo-1534088568595-a066f410cbda?w=400'},
+        {en:'Snowy', icon:'❄️', img:'https://images.unsplash.com/photo-1478265409131-1f65c88f965c?w=400'},
+        {en:'Windy', icon:'🌬️', img:'https://images.unsplash.com/photo-1445952613145-81232840616b?w=400'},
+        {en:'Stormy', icon:'⛈️', img:'https://images.unsplash.com/photo-1605727216801-e27ce1d0ce3c?w=400'}
+      ]
+    };
+
+    const TENSES_DATA = [
+      { name: 'Present Simple', icon: '🗓️', examples: ['She drinks water every day.', 'They play soccer on Sundays.', 'I live in a big city.', 'She works at a small company.', 'They play soccer after school.', 'I study English every morning.', 'He likes coffee with milk.', 'We need more time to finish.', 'You speak very clearly.', 'The teacher explains the lesson well.', 'My brother reads many books.', 'The bus arrives at 7:30.', 'My parents cook dinner every night.', 'She wants to learn new vocabulary.', 'He listens to music while he studies.', 'We visit our grandparents on Sundays.', 'The dog sleeps on the sofa.', 'I clean my room on weekends.', 'She watches TV in the evenings.', 'They travel to the beach every summer.', 'He practices English with his friends.', 'The store opens at 9 a.m.', 'My sister sings very well.', 'I drink water all day.', 'She writes emails for her job.', 'They need help with homework.', 'He uses his phone too much.', 'We walk to school every day.', 'The baby cries when he is hungry.', 'My friends study together on Fridays.', 'She teaches math at the university.', 'I love learning new things.', 'He drives to work every morning.', 'We start class at 8:00.', 'She remembers all the vocabulary.', 'They live in a big house.', 'My cousin plays the guitar.', 'I take notes in every lesson.', 'He needs a new computer.', 'We watch movies on weekends.', 'She buys fruit at the market.', 'They clean the classroom after the activity.', 'I help my classmates when they need support.'], conversations: [{title: "At the Office", dialogue: [{role:'A', text:'Do you work here?'}, {role:'B', text:'Yes, she works at a small company.'}, {role:'A', text:'Do you study?'}, {role:'B', text:'I study English every morning.'}, {role:'A', text:'When do you start?'}, {role:'B', text:'We start class at 8:00.'}, {role:'A', text:'Do they need help?'}, {role:'B', text:'They need help with homework.'}]}, {title: "Weekend Habits", dialogue: [{role:'A', text:'What do they do on weekends?'}, {role:'B', text:'They play soccer on Sundays.'}, {role:'A', text:'Does she like water?'}, {role:'B', text:'She drinks water every day.'}, {role:'A', text:'Do you visit your family?'}, {role:'B', text:'We visit our grandparents on Sundays.'}, {role:'A', text:'Does he drive?'}, {role:'B', text:'He drives to work every morning.'}]}] },
+      { name: 'Present Continuous', icon: '🏃', examples: ['She is drinking water now.', 'They are playing soccer today.', 'I am living in London.', 'She is cooking dinner right now.', 'They are playing soccer in the park.', 'I am studying English at the moment.', 'He is drinking coffee in the kitchen.', 'We are working on a new project.', 'You are speaking very fast today.', 'The students are writing their notes.', 'My brother is reading a new book.', 'The bus is arriving at the station.', 'My parents are cleaning the house.', 'She is learning new vocabulary.', 'He is listening to music while he works.', 'We are visiting our grandparents today.', 'The dog is sleeping on the sofa.', 'I am cleaning my room right now.', 'She is watching a movie tonight.', 'They are traveling to the beach this week.', 'He is practicing English with his friends.', 'The store is opening its doors now.', 'My sister is singing in her room.', 'I am drinking water right now.', 'She is writing an email for her job.', 'They are working on their homework.', 'He is using his phone again.', 'We are walking to school this morning.', 'The baby is crying because he is hungry.', 'My friends are studying together today.', 'She is teaching a class at the moment.', 'I am taking notes in this lesson.', 'He is driving to work right now.', 'We are starting class soon.', 'She is reviewing all the vocabulary.', 'They are living with their cousins temporarily.', 'My cousin is playing the guitar now.', 'I am preparing my materials for class.', 'He is fixing his computer today.', 'We are watching a new series tonight.', 'She is buying fruit at the market.', 'They are cleaning the classroom right now.', 'I am helping my classmates with the activity.'], conversations: [{title: "Right Now", dialogue: [{role:'A', text:'Where are they?'}, {role:'B', text:'They are playing soccer in the park.'}, {role:'A', text:'What are you doing?'}, {role:'B', text:'I am studying English at the moment.'}, {role:'A', text:'Is your brother reading?'}, {role:'B', text:'My brother is reading a new book.'}, {role:'A', text:'Are they coming?'}, {role:'B', text:'They are walking to school this morning.'}]}, {title: "Kitchen Talk", dialogue: [{role:'A', text:'Is she busy?'}, {role:'B', text:'She is cooking dinner right now.'}, {role:'A', text:'What is she drinking?'}, {role:'B', text:'She is drinking water now.'}, {role:'A', text:'Are you helping her?'}, {role:'B', text:'I am preparing my materials for class.'}, {role:'A', text:'Is the baby okay?'}, {role:'B', text:'The baby is crying because he is hungry.'}]}] },
+      { name: 'Present Perfect', icon: '✅', examples: ['She has drunk all the water.', 'They have played three matches.', 'I have lived here for years.', 'She has cooked dinner many times this week.', 'They have played soccer after school today.', 'I have studied English every morning this month.', 'He has drunk too much coffee today.', 'We have worked on that project all day.', 'You have spoken very clearly in class.', 'The students have written their notes already.', 'My brother has read three new books recently.', 'The bus has arrived late again.', 'My parents have cleaned the house this morning.', 'She has learned a lot of new vocabulary.', 'He has listened to that song all afternoon.', 'We have visited our grandparents several times this year.', 'The dog has slept on the sofa all day.', 'I have cleaned my room already.', 'She has watched that movie twice.', 'They have traveled to the beach many times.', 'He has practiced English with his friends this week.', 'The store has opened earlier than usual.', 'My sister has sung in two events this month.', 'I have drunk enough water today.', 'She has written many emails this morning.', 'They have worked on their homework already.', 'He has used his phone too much today.', 'We have walked to school all week.', 'The baby has cried three times this morning.', 'My friends have studied together for the test.', 'She has taught many classes this semester.', 'I have taken good notes in this lesson.', 'He has driven to work every day this week.', 'We have started class on time all month.', 'She has reviewed all the vocabulary already.', 'They have lived with their cousins for two months.', 'My cousin has played the guitar at several events.', 'I have prepared my materials for class.', 'He has fixed his computer successfully.', 'We have watched that new series together.', 'She has bought fruit at the market today.', 'They have cleaned the classroom after the activity.', 'I have helped my classmates many times.'], conversations: [{title: "Accomplishments", dialogue: [{role:'A', text:'Have they finished?'}, {role:'B', text:'They have played three matches.'}, {role:'A', text:'Is the room dirty?'}, {role:'B', text:'I have cleaned my room already.'}, {role:'A', text:'Has he fixed the computer?'}, {role:'B', text:'He has fixed his computer successfully.'}, {role:'A', text:'Have you bought the fruit?'}, {role:'B', text:'She has bought fruit at the market today.'}]}, {title: "Life Experiences", dialogue: [{role:'A', text:'Are you new here?'}, {role:'B', text:'I have lived here for years.'}, {role:'A', text:'Is there any water left?'}, {role:'B', text:'She has drunk all the water.'}, {role:'A', text:'Have they traveled a lot?'}, {role:'B', text:'They have traveled to the beach many times.'}, {role:'A', text:'Has she learned the words?'}, {role:'B', text:'She has learned a lot of new vocabulary.'}]}] },
+      { name: 'Present Perfect Continuous', icon: '⏳', examples: ['She has been drinking water.', 'They have been playing all day.', 'I have been living here lately.', 'She has been cooking new recipes this month.', 'They have been playing basketball after school.', 'I have been studying for my English exam.', 'He has been drinking more water lately.', 'We have been working on a science project.', 'You have been speaking very confidently in class.', 'The students have been writing longer paragraphs.', 'My brother has been reading about history.', 'The bus has been arriving late all week.', 'My parents has been cleaning the garage today.', 'She has been learning how to use new apps.', 'He has been listening to podcasts in the morning.', 'We have been visiting different parks recently.', 'The dog has been sleeping in my room lately.', 'I have been cleaning my desk this afternoon.', 'She has been watching tutorials to improve.', 'They have been traveling around the country.', 'He has been practicing the guitar every night.', 'The store has been opening earlier this month.', 'My sister has been singing in a new choir.', 'I have been drinking smoothies after workouts.', 'She has been writing stories for her class.', 'They have been working on a group presentation.', 'He has been using his laptop for school projects.', 'We have been walking more to stay healthy.', 'The baby has been crying because he is teething.', 'My friends have been studying for the final exam.', 'She has been teaching extra lessons this week.', 'I have been taking photos for my project.', 'He has been driving long distances for work.', 'We have been starting our meetings on time.', 'She has been reviewing her notes every night.', 'They have been living in a rented apartment.', 'My cousin has been playing in a local band.', 'I have been preparing materials for my students.', 'He has been fixing old furniture in the house.', 'We have been watching documentaries together.', 'She has been buying supplies for the event.', 'They have been cleaning the school patio.', 'I have been helping my team with the project.'], conversations: [{title: "Tired Friends", dialogue: [{role:'A', text:'Why are they sweating?'}, {role:'B', text:'They have been playing all day.'}, {role:'A', text:'Why are you so tired?'}, {role:'B', text:'I have been studying for my English exam.'}, {role:'A', text:'Have you been walking?'}, {role:'B', text:'We have been walking more to stay healthy.'}, {role:'A', text:'Has he been working?'}, {role:'B', text:'He has been driving long distances for work.'}]}, {title: "Recent Habits", dialogue: [{role:'A', text:'Where have you been?'}, {role:'B', text:'I have been living here lately.'}, {role:'A', text:'What is she doing?'}, {role:'B', text:'She has been cooking new recipes this month.'}, {role:'A', text:'Have they been practicing?'}, {role:'B', text:'They have been working on a group presentation.'}, {role:'A', text:'Have you been helping?'}, {role:'B', text:'I have been preparing materials for my students.'}]}] },
+      { name: 'Past Simple', icon: '📜', examples: ['She drank water an hour ago.', 'They played soccer yesterday.', 'I lived in Paris before.', 'She cooked dinner last night.', 'They played basketball after school.', 'I studied English yesterday.', 'He drank a big cup of coffee this morning.', 'We worked on the project all afternoon.', 'You spoke very clearly in the meeting.', 'The students wrote a short essay.', 'My brother read an interesting article.', 'The bus arrived ten minutes late.', 'My parents cleaned the kitchen yesterday.', 'She learned three new words.', 'He listened to his favorite playlist.', 'We visited a new museum.', 'The dog slept on my bed.', 'I cleaned my desk yesterday.', 'She watched a documentary.', 'They traveled to another city last weekend.', 'He practiced the piano for an hour.', 'The store opened at 8 a.m.', 'My sister sang at the school event.', 'I drank a smoothie after the gym.', 'She wrote a message to her friend.', 'They worked on a science experiment.', 'He used his laptop all morning.', 'We walked around the neighborhood.', 'The baby cried during the night.', 'My friends studied for the quiz.', 'She taught a short lesson.', 'I took photos of the sunset.', 'He drove to the countryside.', 'We started the meeting on time.', 'She reviewed her notes before class.', 'They lived in another town for a year.', 'My cousin played in a small concert.', 'I prepared my backpack for school.', 'He fixed the broken chair.', 'We watched a new movie.', 'She bought vegetables at the market.', 'They cleaned the backyard.', 'I helped my friend with homework.'], conversations: [{title: "Yesterday's Events", dialogue: [{role:'A', text:'What did they do?'}, {role:'B', text:'They played soccer yesterday.'}, {role:'A', text:'Did you study?'}, {role:'B', text:'I studied English yesterday.'}, {role:'A', text:'Did they go to the park?'}, {role:'B', text:'We walked around the neighborhood.'}, {role:'A', text:'Did she buy anything?'}, {role:'B', text:'She bought vegetables at the market.'}]}, {title: "Last Night", dialogue: [{role:'A', text:'Who made the food?'}, {role:'B', text:'She cooked dinner last night.'}, {role:'A', text:'Did she drink soda?'}, {role:'B', text:'She drank water an hour ago.'}, {role:'A', text:'Did you watch TV?'}, {role:'B', text:'She watched a documentary.'}, {role:'A', text:'Did they clean the house?'}, {role:'B', text:'They cleaned the backyard.'}]}] },
+      { name: 'Past Continuous', icon: '🕒', examples: ['She was drinking water then.', 'They were playing when it rained.', 'I was living there in 2010.', 'She was cooking breakfast when I arrived.', 'They were playing volleyball at the park.', 'I was studying for my test last night.', 'He was drinking tea on the balcony.', 'We were working on a new activity.', 'You were speaking very loudly in the hallway.', 'The students were writing their answers.', 'My brother was reading a comic book.', 'The bus was arriving at the wrong stop.', 'My parents were cleaning the living room.', 'She was learning a new dance routine.', 'He was listening to the radio in his car.', 'We were visiting a friend in the hospital.', 'The dog was sleeping under the table.', 'I was cleaning the windows yesterday.', 'She was watching a live concert online.', 'They were traveling through the mountains.', 'He was practicing the violin all afternoon.', 'The store was opening later than usual.', 'My sister was singing her favorite song.', 'I was drinking lemonade at the café.', 'She was writing a letter to her cousin.', 'They were working on a difficult project.', 'He was using his tablet during class.', 'We were walking near the river.', 'The baby was crying because he was tired.', 'My friends were studying at the library.', 'She was teaching a group of beginners.', 'I was taking pictures of the city.', 'He was driving too fast on the highway.', 'We were starting the game early.', 'She was reviewing her presentation.', 'They were living in a small apartment.', 'My cousin was playing video games.', 'I was preparing a surprise for my students.', 'He was fixing the kitchen sink.', 'We were watching the sunset together.', 'She was buying decorations for the party.', 'They were cleaning the garage.', 'I was helping my neighbor with his homework.'], conversations: [{title: "Interrupted Actions", dialogue: [{role:'A', text:'What happened when it rained?'}, {role:'B', text:'They were playing when it rained.'}, {role:'A', text:'What were you doing?'}, {role:'B', text:'I was studying for my test last night.'}, {role:'A', text:'Was she there?'}, {role:'B', text:'She was cooking breakfast when I arrived.'}, {role:'A', text:'Were you watching the game?'}, {role:'B', text:'We were watching the sunset together.'}]}, {title: "Morning Routine", dialogue: [{role:'A', text:'Was she ready?'}, {role:'B', text:'She was cooking breakfast when I arrived.'}, {role:'A', text:'Where did you live?'}, {role:'B', text:'I was living there in 2010.'}, {role:'A', text:'Was the baby quiet?'}, {role:'B', text:'The baby was crying because he was tired.'}, {role:'A', text:'Were they at school?'}, {role:'B', text:'My friends were studying at the library.'}]}] },
+      { name: 'Past Perfect', icon: '⌛', examples: ['She had drunk water before.', 'They had played before lunch.', 'I had lived there already.', 'She had cooked breakfast before we arrived.', 'They had played two matches before it rained.', 'I had studied all night for the exam.', 'He had drunk all the juice before lunch.', 'We had worked on the project for hours.', 'You had spoken to the teacher earlier.', 'The students had written their reports before class.', 'My brother had read that book already.', 'The bus had arrived before we reached the stop.', 'My parents had cleaned the patio before the guests came.', 'She had learned the new steps before the rehearsal.', 'He had listened to the instructions carefully.', 'We had visited that museum before the trip.', 'The dog had slept all morning.', 'I had cleaned my backpack before school.', 'She had watched the trailer before the movie.', 'They had traveled to several cities before moving here.', 'He had practiced the song many times.', 'The store had opened early that day.', 'My sister had sung that song before the concert.', 'I had drunk enough water before training.', 'She had written the introduction before the meeting.', 'They had worked together on many projects.', 'He had used that tool before.', 'We had walked a long distance before resting.', 'The baby had cried for a few minutes.', 'My friends had studied the topic before the quiz.', 'She had taught that lesson last semester.', 'I had taken pictures before the battery died.', 'He had driven for hours before stopping.', 'We had started the activity before the bell rang.', 'She had reviewed her notes before the test.', 'They had lived in that house for years.', 'My cousin had played that song at another event.', 'I had prepared everything before the class.', 'He had fixed the problem earlier.', 'We had watched that documentary before.', 'She had bought the materials before the workshop.', 'They had cleaned the room before the activity.', 'I had helped my team many times before.'], conversations: [{title: "Before We Arrived", dialogue: [{role:'A', text:'Was breakfast ready?'}, {role:'B', text:'She had cooked breakfast before we arrived.'}, {role:'A', text:'Did they play?'}, {role:'B', text:'They had played two matches before it rained.'}, {role:'A', text:'Had they cleaned?'}, {role:'B', text:'My parents had cleaned the patio before the guests came.'}, {role:'A', text:'Had you finished the work?'}, {role:'B', text:'I had prepared everything before the class.'}]}, {title: "Prior Knowledge", dialogue: [{role:'A', text:'Did you know the city?'}, {role:'B', text:'I had lived there already.'}, {role:'A', text:'Were you prepared?'}, {role:'B', text:'I had studied all night for the exam.'}, {role:'A', text:'Had she practiced?'}, {role:'B', text:'She had learned the new steps before the rehearsal.'}, {role:'A', text:'Had he checked the car?'}, {role:'B', text:'He had fixed the problem earlier.'}]}] },
+      { name: 'Past Perfect Continuous', icon: '🕰️', examples: ['She had been drinking for hours.', 'They had been playing since noon.', 'I had been living alone.', 'She had been organizing the event for weeks.', 'They had been painting the classroom all morning.', 'I had been training for the competition for months.', 'He had been repairing his motorcycle before it broke again.', 'We had been planning the trip since January.', 'You had been practicing your speech for days.', 'The students had been building their models before the deadline.', 'My brother had been cooking dinner when the power went out.', 'The team had been preparing a new strategy for the game.', 'My parents had been planting trees in the backyard.', 'She had been filming scenes for her project all afternoon.', 'He had been editing videos before his computer crashed.', 'We had been exercising every morning before school started.', 'The dog had been running around the house all day.', 'I had been organizing my notes before the exam.', 'She had been baking cookies for the fundraiser.', 'They had been learning new techniques in class.', 'He had been repairing old furniture for the workshop.', 'We had been collecting donations for the community.', 'My sister had been practicing her lines for the play.', 'I had been jogging every evening before it rained.', 'She had been decorating the hall for the celebration.', 'They had been preparing snacks for the visitors.', 'He had been drawing sketches for his portfolio.', 'We had been rehearsing the presentation for hours.', 'The baby had been exploring every corner of the house.', 'My friends had been recording music together.', 'She had been packing her things before the move.', 'I had been watering the plants every morning.', 'He had been organizing his tools before the project started.', 'We had been learning new software for the class.', 'She had been practicing yoga before breakfast.', 'They had been fixing the roof all weekend.', 'I had been reviewing my notes before the test.', 'He had been cooking breakfast for everyone.', 'We had been collecting data for the experiment.', 'She had been preparing decorations for the party.', 'They had been exercising at the gym regularly.', 'I had been improving my drawing skills for months.', 'He had been cleaning the garage before the guests arrived.'], conversations: [{title: "Hard Work", dialogue: [{role:'A', text:'Why were they dirty?'}, {role:'B', text:'They had been painting the classroom all morning.'}, {role:'A', text:'Were you ready?'}, {role:'B', text:'I had been training for the competition for months.'}, {role:'A', text:'Had he been driving?'}, {role:'B', text:'He had been repairing his motorcycle before it broke again.'}, {role:'A', text:'Had she been helping?'}, {role:'B', text:'She had been organizing the event for weeks.'}]}, {title: "Long Preparations", dialogue: [{role:'A', text:'Was she tired?'}, {role:'B', text:'She had been organizing the event for weeks.'}, {role:'A', text:'Did they play a lot?'}, {role:'B', text:'They had been playing since noon.'}, {role:'A', text:'Had you been waiting?'}, {role:'B', text:'We had been planning the trip since January.'}, {role:'A', text:'Had he been sleeping?'}, {role:'B', text:'He had been editing videos before his computer crashed.'}]}] },
+      { name: 'Future Simple', icon: '🚀', examples: ['She will drink water later.', 'They will play soccer tomorrow.', 'I will live in New York.', 'She will cook a special dinner tonight.', 'They will play a friendly match tomorrow.', 'I will study for my English quiz later.', 'He will drink a cup of tea before bed.', 'We will work on the new project next week.', 'You will speak at the meeting this afternoon.', 'The students will write a short paragraph.', 'My brother will read that book this weekend.', 'The bus will arrive in a few minutes.', 'My parents will clean the house tomorrow.', 'She will learn a new skill this year.', 'He will listen to the instructions carefully.', 'We will visit a historical museum soon.', 'The dog will sleep in the living room tonight.', 'I will clean my desk later today.', 'She will watch the new episode tonight.', 'They will travel to another city next month.', 'He will practice the piano after school.', 'The store will open earlier tomorrow.', 'My sister will sing at the school event.', 'I will drink more water this afternoon.', 'She will write a report for her job.', 'They will work together on the assignment.', 'He will use his laptop for the presentation.', 'We will walk to the park later.', 'The baby will cry if he gets tired.', 'My friends will study for the exam tonight.', 'She will teach a new lesson tomorrow.', 'I will take photos during the trip.', 'He will drive to the countryside this weekend.', 'We will start the activity soon.', 'She will review her notes before class.', 'They will live in a different place next year.', 'My cousin will play the guitar at the event.', 'I will prepare everything for the meeting.', 'He will fix the broken shelf.', 'We will watch a movie tonight.', 'She will buy fresh fruit at the market.', 'They will clean the classroom after school.', 'I will help my classmates with the project.'], conversations: [{title: "Tomorrow's Plans", dialogue: [{role:'A', text:'What are their plans?'}, {role:'B', text:'They will play soccer tomorrow.'}, {role:'A', text:'What about you?'}, {role:'B', text:'I will study for my English quiz later.'}, {role:'A', text:'Will she come?'}, {role:'B', text:'She will review her notes before class.'}, {role:'A', text:'Will they travel?'}, {role:'B', text:'They will travel to another city next month.'}]}, {title: "Tonight", dialogue: [{role:'A', text:'What is for dinner?'}, {role:'B', text:'She will cook a special dinner tonight.'}, {role:'A', text:'Where will you move?'}, {role:'B', text:'I will live in New York.'}, {role:'A', text:'Will we have time?'}, {role:'B', text:'We will watch a movie tonight.'}, {role:'A', text:'Will he fix it?'}, {role:'B', text:'He will fix the broken shelf.'}]}] },
+      { name: 'Future Continuous', icon: '🛰', examples: ['She will be drinking water.', 'They will be playing at 5 PM.', 'I will be living in Japan.', 'She will be organizing the classroom tomorrow morning.', 'They will be playing volleyball at the sports center.', 'I will be studying for my certification this weekend.', 'He will be drinking tea on the balcony later.', 'We will be working on the science fair project.', 'You will be speaking with the new students this afternoon.', 'The students will be writing their final drafts.', 'My brother will be reading his new novel tonight.', 'The bus will be arriving at the station soon.', 'My parents will be cleaning the backyard later.', 'She will be learning new computer skills next week.', 'He will be listening to the audio guide at the museum.', 'We will be visiting several classrooms during the tour.', 'The dog will be sleeping in the shade.', 'I will be cleaning the whiteboard after class.', 'She will be watching a live workshop online.', 'They will be traveling through the mountains tomorrow.', 'He will be practicing the violin before the recital.', 'The store will be opening earlier for the sale.', 'My sister will be singing with the choir tonight.', 'I will be drinking a smoothie after training.', 'She will be writing invitations for the event.', 'They will be working on a group project all afternoon.', 'He will be using his tablet for the presentation.', 'We will be walking around the city center.', 'The baby will be crying if he gets tired.', 'My friends will be studying at the library later.', 'She will be teaching a special workshop tomorrow.', 'I will be taking photos during the ceremony.', 'He will be driving to the coast in the morning.', 'We will be starting the rehearsal soon.', 'She will be reviewing her slides before the meeting.', 'They will be living in a rented apartment temporarily.', 'My cousin will be playing the piano at the event.', 'I will be preparing materials for the new lesson.', 'He will be fixing the garden fence this afternoon.', 'We will be watching the performance tonight.', 'She will be buying decorations for the celebration.', 'They will be cleaning the auditorium after the show.', 'I will be helping my team during the activity.'], conversations: [{title: "Future Schedules", dialogue: [{role:'A', text:'Can I call them at 5?'}, {role:'B', text:'They will be playing at 5 PM.'}, {role:'A', text:'What about the weekend?'}, {role:'B', text:'I will be studying for my certification this weekend.'}, {role:'A', text:'Will he be at home?'}, {role:'B', text:'He will be drinking tea on the balcony later.'}, {role:'A', text:'Will they be working?'}, {role:'B', text:'They will be cleaning the auditorium after the show.'}]}, {title: "Tomorrow Morning", dialogue: [{role:'A', text:'Will she be free?'}, {role:'B', text:'She will be organizing the classroom tomorrow morning.'}, {role:'A', text:'Where will you be?'}, {role:'B', text:'I will be living in Japan.'}, {role:'A', text:'Will the baby sleep?'}, {role:'B', text:'The baby will be crying if he gets tired.'}, {role:'A', text:'Will you be busy?'}, {role:'B', text:'I will be preparing materials for the new lesson.'}]}] },
+      { name: 'Future Perfect', icon: '🏁', examples: ['She will have drunk it by then.', 'They will have played enough.', 'I will have lived here a year.', 'She will have finished the report by tomorrow morning.', 'They will have completed the project before the deadline.', 'I will have studied all the units before the exam.', 'He will have drunk his coffee by the time you arrive.', 'We will have organized the classroom before the event starts.', 'You will have spoken with the coordinator by noon.', 'The students will have written their essays by Friday.', 'My brother will have read the entire series by next month.', 'The bus will have arrived before we get there.', 'My parents will have cleaned the attic by the weekend.', 'She will have learned the choreography before the show.', 'He will have listened to all the instructions by then.', 'We will have visited three museums by the end of the trip.', 'The dog will have slept for hours by the afternoon.', 'I will have cleaned the kitchen before dinner.', 'She will have watched all the episodes by tonight.', 'They will have traveled to several countries by next year.', 'He will have practiced the guitar enough for the audition.', 'The store will have opened by the time we arrive.', 'My sister will have sung two songs before the break.', 'I will have drunk enough water before training.', 'She will have written the introduction before the meeting.', 'They will have worked on the presentation for days.', 'He will have used all the materials by tomorrow.', 'We will have walked many kilometers by sunset.', 'The baby will have cried several times by then.', 'My friends will have studied the whole chapter by class time.', 'She will have taught three lessons by lunchtime.', 'I will have taken all the photos I need.', 'He will have driven for hours before reaching the hotel.', 'We will have started the activity before the guests arrive.', 'She will have reviewed all her notes by the test.', 'They will have lived in that apartment for a year.', 'My cousin will have played all the songs on the list.', 'I will have prepared everything for the workshop.', 'He will have fixed the computer before the meeting.', 'We will have watched the entire documentary by midnight.', 'She will have bought all the supplies for the project.', 'They will have cleaned the auditorium before the event.', 'I will have helped my team finish the task.'], conversations: [{title: "Deadlines", dialogue: [{role:'A', text:'Will the report be ready?'}, {role:'B', text:'She will have finished the report by tomorrow morning.'}, {role:'A', text:'And the project?'}, {role:'B', text:'They will have completed the project before the deadline.'}, {role:'A', text:'Will he be there?'}, {role:'B', text:'He will have driven for hours before reaching the hotel.'}, {role:'A', text:'Will it be clean?'}, {role:'B', text:'They will have cleaned the auditorium before the event.'}]}, {title: "Milestones", dialogue: [{role:'A', text:'Are you ready for the test?'}, {role:'B', text:'I will have studied all the units before the exam.'}, {role:'A', text:'Will you stay long?'}, {role:'B', text:'I will have lived here a year.'}, {role:'A', text:'Will you be hydrated?'}, {role:'B', text:'I will have drunk enough water before training.'}, {role:'A', text:'Will the dog rest?'}, {role:'B', text:'The dog will have slept for hours by the afternoon.'}]}] },
+      { name: 'Future Perfect Continuous', icon: '🌪️', examples: ['She will have been drinking.', 'They will have been playing.', 'I will have been living here.', 'She will have been organizing the files for hours by then.', 'They will have been painting the new mural all morning.', 'I will have been training for the race for six months.', 'He will have been repairing his old car for days.', 'We will have been planning the festival since January.', 'You will have been practicing your presentation all week.', 'The students will have been building their prototypes for days.', 'My brother will have been cooking for the whole family.', 'The team will have been preparing strategies for the tournament.', 'My parents will have been planting vegetables in the garden.', 'She will have been filming scenes for her documentary.', 'He will have been editing his project for hours.', 'We will have been exercising every afternoon before the event.', 'The dog will have been running around the yard all day.', 'I will have been organizing my materials for the workshop.', 'She will have been baking desserts for the celebration.', 'They will have been learning new software tools.', 'He will have been repairing the fence since early morning.', 'We will have been collecting donations for the campaign.', 'My sister will have been practicing her dance routine.', 'I will have been jogging every morning before sunrise.', 'She will have been decorating the hall for the ceremony.', 'They will have been preparing snacks for the visitors.', 'He will have been drawing designs for his portfolio.', 'We will have been rehearsing the performance for weeks.', 'The baby will have been exploring the house all afternoon.', 'My friends will have been recording videos for their channel.', 'She will have been packing her things for the trip.', 'I will have been watering the plants every day.', 'He will have been organizing his workshop tools.', 'We will have been learning advanced techniques.', 'She will have been practicing yoga before work.', 'They will have been fixing the roof since the morning.', 'I will have been reviewing my notes for the exam.', 'He will have been cooking breakfast for everyone.', 'We will have been collecting data for the research project.', 'She will have been preparing decorations for the event.', 'They will have been exercising at the gym regularly.', 'I will have been improving my writing skills.', 'He will have been cleaning the backyard before the guests arrive.'], conversations: [{title: "Long Duration", dialogue: [{role:'A', text:'Will they be tired?'}, {role:'B', text:'They will have been painting the new mural all morning.'}, {role:'A', text:'Are you prepared for the race?'}, {role:'B', text:'I will have been training for the race for six months.'}, {role:'A', text:'Will he be done?'}, {role:'B', text:'He will have been repairing his old car for days.'}, {role:'A', text:'Will you be tired?'}, {role:'B', text:'We will have been planning the festival since January.'}]}, {title: "Continuous Work", dialogue: [{role:'A', text:'Will she be done?'}, {role:'B', text:'She will have been organizing the files for hours by then.'}, {role:'A', text:'Will they want to stop?'}, {role:'B', text:'They will have been playing.'}, {role:'A', text:'Will she have enough food?'}, {role:'B', text:'She will have been baking desserts for the celebration.'}, {role:'A', text:'Will he be ready?'}, {role:'B', text:'He will have been drawing designs for his portfolio.'}]}] },
+      { name: 'Conditional Simple', icon: '🤔', examples: ['She would drink water if thirsty.', 'They would play if they could.', 'I would live in a forest.', 'She would cook more often if she had time.', 'They would play outside if it stopped raining.', 'I would study English every day if I could.', 'He would drink tea instead of coffee.', 'We would work together on that project.', 'You would speak better with more practice.', 'The students would write faster with clear instructions.', 'My brother would read that book again.', 'The bus would arrive earlier with less traffic.', 'My parents would clean the garage this weekend.', 'She would learn French if she moved to Canada.', 'He would listen to that podcast again.', 'We would visit more museums on vacation.', 'The dog would sleep in my room if I let him.', 'I would clean the house tomorrow.', 'She would watch that movie again.', 'They would travel more if they had money.', 'He would practice the guitar every night.', 'The store would open earlier on holidays.', 'My sister would sing at the event.', 'I would drink more water during the day.', 'She would write a book someday.', 'They would work harder with motivation.', 'He would use his laptop for the project.', 'We would walk to school if it were closer.', 'The baby would cry if he got scared.', 'My friends would study together on weekends.', 'She would teach online classes.', 'I would take more photos on my trips.', 'He would drive to the mountains.', 'We would start the activity earlier.', 'She would review her notes before class.', 'They would live near the beach.', 'My cousin would play the piano at the party.', 'I would prepare everything in advance.', 'He would fix the broken table.', 'We would watch that series again.', 'She would buy fresh vegetables every day.', 'They would clean the classroom after lunch.', 'I would help anyone who needed support.'], conversations: [{title: "Hypothetical Actions", dialogue: [{role:'A', text:'Why doesn\'t she cook?'}, {role:'B', text:'She would cook more often if she had time.'}, {role:'A', text:'Would you study more?'}, {role:'B', text:'I would study English every day if I could.'}, {role:'A', text:'Would they go out?'}, {role:'B', text:'They would play outside if it stopped raining.'}, {role:'A', text:'Would he help?'}, {role:'B', text:'He would use his laptop for the project.'}]}, {title: "Desires", dialogue: [{role:'A', text:'Where would you live?'}, {role:'B', text:'I would live in a forest.'}, {role:'A', text:'Would they play now?'}, {role:'B', text:'They would play outside if it stopped raining.'}, {role:'A', text:'Would she write to me?'}, {role:'B', text:'She would write a book someday.'}, {role:'A', text:'Would we go?'}, {role:'B', text:'We would walk to school if it were closer.'}]}] },
+      { name: 'Conditional Continuous', icon: '🌊', examples: ['She would be drinking water.', 'They would be playing now.', 'I would be living in Italy.', 'She would be cooking dinner at this time.', 'They would be playing outside right now.', 'I would be studying for my exam this afternoon.', 'He would be drinking tea on the balcony.', 'We would be working on the project together.', 'You would be speaking with the manager now.', 'The students would be writing their assignments.', 'My brother would be reading in the living room.', 'The bus would be arriving soon.', 'My parents would be cleaning the backyard today.', 'She would be learning new skills this month.', 'He would be listening to music while working.', 'We would be visiting the museum right now.', 'The dog would be sleeping under the table.', 'I would be cleaning my room this morning.', 'She would be watching a documentary tonight.', 'They would be traveling through the mountains.', 'He would be practicing the piano at this hour.', 'The store would be opening earlier today.', 'My sister would be singing with the choir.', 'I would be drinking a smoothie after training.', 'She would be writing her report right now.', 'They would be working on a group project.', 'He would be using his laptop for homework.', 'We would be walking around the park.', 'The baby would be crying if he were tired.', 'My friends would be studying at the library.', 'She would be teaching an online class.', 'I would be taking photos during the event.', 'He would be driving to the coast today.', 'We would be starting the activity soon.', 'She would be reviewing her notes right now.', 'They would be living in another city.', 'My cousin would be playing the guitar at rehearsal.', 'I would be preparing materials for class.', 'He would be fixing the broken shelf.', 'We would be watching the performance tonight.', 'She would be buying groceries at the market.', 'They would be cleaning the classroom now.', 'I would be helping my team with the task.'], conversations: [{title: "Right Now If...", dialogue: [{role:'A', text:'What would she be doing?'}, {role:'B', text:'She would be cooking dinner at this time.'}, {role:'A', text:'And them?'}, {role:'B', text:'They would be playing outside right now.'}, {role:'A', text:'What would he be doing?'}, {role:'B', text:'He would be using his laptop for homework.'}, {role:'A', text:'What about the baby?'}, {role:'B', text:'The baby would be crying if he were tired.'}]}, {title: "Different Reality", dialogue: [{role:'A', text:'Where would you be?'}, {role:'B', text:'I would be living in Italy.'}, {role:'A', text:'What would you be doing?'}, {role:'B', text:'I would be studying for my exam this afternoon.'}, {role:'A', text:'What would we be doing?'}, {role:'B', text:'We would be walking around the park.'}, {role:'A', text:'What would she buy?'}, {role:'B', text:'She would be buying groceries at the market.'}]}] },
+      { name: 'Conditional Perfect', icon: '💎', examples: ['She would have drunk more.', 'They would have played better.', 'I would have lived there.', 'She would have cooked earlier if she had known.', 'They would have played better with more practice.', 'I would have studied more for the test.', 'He would have drunk more water on a hotter day.', 'We would have worked faster with better tools.', 'You would have spoken more confidently with preparation.', 'The students would have written longer essays.', 'My brother would have read the whole book.', 'The bus would have arrived sooner without traffic.', 'My parents would have cleaned the attic last weekend.', 'She would have learned the lesson with clearer instructions.', 'He would have listened more carefully.', 'We would have visited that museum if it were open.', 'The dog would have slept longer without noise.', 'I would have cleaned the room earlier.', 'She would have watched the documentary if she had time.', 'They would have traveled farther with more money.', 'He would have practiced the guitar every night.', 'The store would have opened earlier on holidays.', 'My sister would have sung at the event.', 'I would have drunk another smoothie.', 'She would have written the report sooner.', 'They would have worked harder with motivation.', 'He would have used his laptop for the project.', 'We would have walked to school if it were closer.', 'The baby would have cried louder.', 'My friends would have studied together for the exam.', 'She would have taught the class differently.', 'I would have taken more photos on the trip.', 'He would have driven to the mountains.', 'We would have started the activity earlier.', 'She would have reviewed her notes before class.', 'They would have lived in another city.', 'My cousin would have played the piano at the party.', 'I would have prepared everything in advance.', 'He would have fixed the broken chair.', 'We would have watched the series again.', 'She would have bought more supplies.', 'They would have cleaned the classroom after lunch.', 'I would have helped anyone who needed support.'], conversations: [{title: "Regrets", dialogue: [{role:'A', text:'Why was dinner late?'}, {role:'B', text:'She would have cooked earlier if she had known.'}, {role:'A', text:'Did you pass?'}, {role:'B', text:'I would have studied more for the test.'}, {role:'A', text:'Why did you fail?'}, {role:'B', text:'I would have prepared everything in advance.'}, {role:'A', text:'Why did they lose?'}, {role:'B', text:'They would have played better with more practice.'}]}, {title: "Past Possibilities", dialogue: [{role:'A', text:'Did they win?'}, {role:'B', text:'They would have played better with more practice.'}, {role:'A', text:'Did you like the house?'}, {role:'B', text:'I would have lived there.'}, {role:'A', text:'Was he ready?'}, {role:'B', text:'He would have used his laptop for the project.'}, {role:'A', text:'Was she clear?'}, {role:'B', text:'She would have learned the lesson with clearer instructions.'}]}] },
+      { name: 'Conditional Perfect Continuous', icon: '🌌', examples: ['She would have been drinking.', 'They would have been playing.', 'I would have been living.', 'She would have been cooking all afternoon.', 'They would have been playing for hours.', 'I would have been studying all night.', 'He would have been drinking tea on the porch.', 'We would have been working on the project together.', 'You would have been speaking with the director.', 'The students would have been writing their reports.', 'My brother would have been reading in the garden.', 'The bus would have been arriving at that moment.', 'My parents would have been cleaning the garage.', 'She would have been learning new techniques.', 'He would have been listening to the instructions.', 'We would have been visiting different classrooms.', 'The dog would have been sleeping on the sofa.', 'I would have been cleaning the kitchen.', 'She would have been watching the live event.', 'They would have been traveling across the country.', 'He would have been practicing the violin.', 'The store would have been opening earlier.', 'My sister would have been singing with the choir.', 'I would have been drinking a smoothie after training.', 'She would have been writing her final draft.', 'They would have been working on the presentation.', 'He would have been using his tablet for homework.', 'We would have been walking around the city.', 'The baby would have been crying for a while.', 'My friends would have been studying for the test.', 'She would have been teaching an advanced class.', 'I would have been taking photos of the event.'], conversations: [{title: "Alternative Past", dialogue: [{role:'A', text:'If she stayed home?'}, {role:'B', text:'She would have been cooking all afternoon.'}, {role:'A', text:'If you didn\'t sleep?'}, {role:'B', text:'I would have been studying all night.'}, {role:'A', text:'If they had time?'}, {role:'B', text:'They would have been working on the presentation.'}, {role:'A', text:'If he wasn\'t busy?'}, {role:'B', text:'He would have been practicing the violin.'}]}, {title: "What If?", dialogue: [{role:'A', text:'If they weren\'t interrupted?'}, {role:'B', text:'They would have been playing for hours.'}, {role:'A', text:'If you had the visa?'}, {role:'B', text:'I would have been living.'}, {role:'A', text:'If she bought the tickets?'}, {role:'B', text:'She would have been traveling across the country.'}, {role:'A', text:'If we knew?'}, {role:'B', text:'We would have been visiting different classrooms.'}]}] }
+    ];
+
+    const COMP_DATA = [
+      { type: 'Comparative', adj: 'Fast', sentence: 'A cheetah is {ans} than a dog.', options: ['faster', 'fastest', 'fastier'], correct: 'faster' },
+      { type: 'Superlative', adj: 'Tall', sentence: 'He is the {ans} player on the team.', options: ['tallest', 'taller', 'most tall'], correct: 'tallest' },
+      { type: 'Comparative', adj: 'Short', sentence: 'This pencil is {ans} than that one.', options: ['shorter', 'shortest', 'shortier'], correct: 'shorter' },
+      { type: 'Superlative', adj: 'Easy', sentence: 'Math is the {ans} subject for me.', options: ['easiest', 'easier', 'most easy'], correct: 'easiest' }
+    ];
+
+    /* NUEVA LEYENDA DE BLOQUES (TILES):
+      0: Vacío | 1: Muro | 2: Vocabulario (❓) | 3: Enemigo Gramatical (👾) | 4: Inicio 
+      5: Salida (🏰) | 6: Moneda (🟡) | 7: Nube/Decor | 8: Vacío Oscuro | 9: Muro Inferior
+      10: Trampa Eléctrica (⚡)
+      11: Trampa de Fuego (🔥) - Se alterna con la eléctrica
+      12: Enemigo Móvil / Fantasma (👻) - Se mueve de izquierda a derecha
+    */
+    const ARCADE_LEVELS = [
+      { // 1. Present Simple
+        name: 'WORLD 1', subtitle: 'Present Simple', tenseIdx: 0, theme: 'bg-sky-400', wallStyle: 'bg-amber-600 border-amber-800', floorStyle: 'bg-emerald-500/20',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,3,0,1,6,0,3,0,0,1,0,3,0,0,1,0,5,1],
+          [1,1,0,1,0,1,0,1,1,1,0,1,0,1,1,0,1,0,1,1],
+          [1,6,0,3,0,0,0,3,0,0,0,0,0,3,0,0,0,0,2,1],
+          [1,1,0,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1],
+          [1,2,0,0,0,3,0,6,0,0,0,0,3,0,6,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 2. Present Continuous
+        name: 'WORLD 2', subtitle: 'Present Continuous', tenseIdx: 1, theme: 'bg-emerald-500', wallStyle: 'bg-emerald-700 border-emerald-900', floorStyle: 'bg-emerald-800/30',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,3,0,10,0,3,1,6,0,10,0,3,0,1,0,5,1],
+          [1,1,1,1,0,1,1,0,1,0,1,1,1,1,0,1,1,0,1,1],
+          [1,2,0,10,0,0,0,0,1,0,0,3,0,0,0,10,0,0,3,1],
+          [1,0,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,0,1],
+          [1,0,0,0,6,0,3,0,10,0,3,0,6,0,10,0,3,0,2,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 3. Past Simple
+        name: 'WORLD 3', subtitle: 'Past Simple', tenseIdx: 4, theme: 'bg-amber-700', wallStyle: 'bg-orange-900 border-red-950', floorStyle: 'bg-amber-900/40',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,11,3,0,1,6,0,11,3,0,1,6,0,11,3,5,1],
+          [1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,0,1],
+          [1,2,0,3,0,0,0,11,0,3,0,0,0,11,0,3,0,0,2,1],
+          [1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,1],
+          [1,6,0,3,0,11,0,0,0,0,11,0,3,0,6,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 4. Past Continuous
+        name: 'WORLD 4', subtitle: 'Past Continuous', tenseIdx: 5, theme: 'bg-slate-800', wallStyle: 'bg-slate-900 border-black', floorStyle: 'bg-slate-700/50',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,12,0,3,1,0,0,12,0,3,1,6,0,12,0,0,5,1],
+          [1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,0,1],
+          [1,2,0,3,0,0,0,0,0,3,0,0,0,12,0,3,0,2,1,1],
+          [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,3,0,12,0,6,3,0,0,12,0,6,3,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 5. Present Perfect
+        name: 'WORLD 5', subtitle: 'Present Perfect', tenseIdx: 2, theme: 'bg-emerald-700', wallStyle: 'bg-emerald-900 border-emerald-950', floorStyle: 'bg-emerald-900/30',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,3,10,0,1,0,3,10,0,1,0,3,10,0,2,0,5,1],
+          [1,1,0,1,1,0,1,0,1,1,0,1,0,1,1,1,1,1,0,1],
+          [1,6,0,0,11,3,0,0,0,11,3,0,0,0,10,0,3,0,6,1],
+          [1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],
+          [1,2,0,3,12,0,6,0,0,0,12,0,0,3,10,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 6. Past Perfect
+        name: 'WORLD 6', subtitle: 'Past Perfect', tenseIdx: 6, theme: 'bg-indigo-900', wallStyle: 'bg-indigo-950 border-black', floorStyle: 'bg-indigo-800/30',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,11,3,12,0,1,0,11,3,12,0,1,2,0,3,0,5,1],
+          [1,1,1,1,1,1,0,1,0,1,1,1,1,0,1,1,1,1,0,1],
+          [1,6,0,3,10,0,0,0,0,0,10,3,0,0,0,10,3,0,6,1],
+          [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,2,0,12,0,3,11,0,0,12,0,3,11,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 7. Future Simple
+        name: 'WORLD 7', subtitle: 'Future Simple', tenseIdx: 8, theme: 'bg-red-900', wallStyle: 'bg-stone-900 border-black', floorStyle: 'bg-red-950/50',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,11,3,11,0,1,6,11,3,11,0,1,6,11,3,0,0,5,1],
+          [1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,1,1],
+          [1,2,0,3,0,12,0,0,0,3,0,12,0,0,0,3,11,0,2,1],
+          [1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1],
+          [1,6,0,3,11,0,0,0,0,0,11,3,0,12,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 8. Future Continuous
+        name: 'WORLD 8', subtitle: 'Future Continuous', tenseIdx: 9, theme: 'bg-orange-800', wallStyle: 'bg-stone-800 border-black', floorStyle: 'bg-orange-950/40',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,10,12,3,1,0,10,12,3,1,0,10,12,3,0,0,5,1],
+          [1,1,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,1,0,1],
+          [1,2,0,3,0,11,0,0,0,3,0,11,0,0,0,3,10,0,2,1],
+          [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,6,10,3,11,0,0,10,3,11,0,0,0,12,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 9. Past Perfect Continuous
+        name: 'WORLD 9', subtitle: 'Past Perf. Cont.', tenseIdx: 7, theme: 'bg-indigo-950', wallStyle: 'bg-black border-slate-900', floorStyle: 'bg-indigo-900/50',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,11,3,12,0,1,10,3,12,0,1,11,3,12,0,2,0,5,1],
+          [1,1,0,1,1,0,1,1,0,1,1,0,1,1,0,1,1,1,1,1],
+          [1,6,0,0,10,3,0,0,0,11,3,0,0,0,10,3,0,0,6,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,0,1],
+          [1,2,0,3,11,10,0,0,12,0,0,0,0,0,0,3,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 10. Future Perfect Continuous
+        name: 'WORLD 10', subtitle: 'Fut. Perf. Cont.', tenseIdx: 11, theme: 'bg-red-950', wallStyle: 'bg-black border-red-900', floorStyle: 'bg-red-900/30',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,11,3,10,1,11,3,10,1,11,3,10,1,6,0,0,5,1],
+          [1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1],
+          [1,2,0,12,0,3,0,12,0,3,0,12,0,3,0,11,0,0,2,1],
+          [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,6,10,3,11,12,0,0,10,3,11,12,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 11. Conditional Simple
+        name: 'WORLD 11', subtitle: 'Conditional Simple', tenseIdx: 12, theme: 'bg-slate-700', wallStyle: 'bg-slate-900 border-black', floorStyle: 'bg-slate-600/30',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,10,12,3,0,1,11,12,3,0,1,10,12,3,0,6,0,5,1],
+          [1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1],
+          [1,2,0,3,10,11,0,0,0,3,10,11,0,0,0,3,10,11,2,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+          [1,6,0,12,0,3,11,10,0,0,12,0,3,11,10,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 12. Conditional Continuous
+        name: 'WORLD 12', subtitle: 'Cond. Continuous', tenseIdx: 13, theme: 'bg-slate-800', wallStyle: 'bg-black border-slate-700', floorStyle: 'bg-slate-900/50',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,0,11,10,3,1,11,10,3,1,11,10,3,1,2,0,0,5,1],
+          [1,1,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1,0,1],
+          [1,6,0,12,0,3,11,12,0,3,11,12,0,3,11,0,0,0,6,1],
+          [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,2,10,11,3,12,0,0,10,11,3,12,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 13. Conditional Perfect
+        name: 'WORLD 13', subtitle: 'Conditional Perfect', tenseIdx: 14, theme: 'bg-zinc-900', wallStyle: 'bg-zinc-950 border-black', floorStyle: 'bg-zinc-800/40',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,12,10,11,3,1,12,10,11,3,1,12,10,11,3,0,0,5,1],
+          [1,1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1],
+          [1,2,0,3,12,10,11,0,0,3,12,10,11,0,0,3,12,10,2,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],
+          [1,6,0,11,10,3,12,0,0,11,10,3,12,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      },
+      { // 14. Conditional Perfect Continuous
+        name: 'FINAL CASTLE', subtitle: 'Cond. Perf. Cont.', tenseIdx: 15, theme: 'bg-black', wallStyle: 'bg-stone-900 border-red-900', floorStyle: 'bg-red-950/20',
+        map: [
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,4,10,11,12,3,1,10,11,12,3,1,10,11,12,3,0,0,5,1],
+          [1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1,1,0,1],
+          [1,6,0,3,12,11,10,0,0,3,12,11,10,0,0,3,12,11,2,1],
+          [1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          [1,0,2,11,10,3,12,0,0,11,10,3,12,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ]
+      }
+    ];
+
+    // --- LOGICA ---
+    let state = {
+      score: 0, pIdx: 0, pCategory: 'Animals', 
+      tIdx: 0, tExIdx: 0, tUserOrder: [], cIdx: 0,
+      mFlipped: [], mSolved: [],
+      cvTenseIdx: 0, cvIdx: 0, cvRole: null, cvLineIdx: 0,
+      arLvl: 0, arMap: [], arP: {x:1, y:1}, arDir: 1, arLives: 3, arModal: false, arTarget: null,
+      arTrapActive: false, arEnemies: [], arUsedSentences: []
+    };
+
+    const speak = (txt, callback = null) => {
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'en-US'; u.rate = 0.9;
+      if(callback) u.onend = callback;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(u);
+    };
+
+    const recognition = (window.SpeechRecognition || window.webkitSpeechRecognition) ? new (window.SpeechRecognition || window.webkitSpeechRecognition)() : null;
+    if(recognition) recognition.lang = 'en-US';
+
+    function showTab(id) {
+      document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden'));
+      document.getElementById(id + '-section').classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+      document.getElementById('btn-' + id).classList.add('tab-active');
+      
+      if(id === 'match') { stopArcadeSystems(); stopZombies(); initMatch(); }
+      if(id === 'pronounce') { stopArcadeSystems(); stopZombies(); renderPronounceCategories(); updatePronounce(); }
+      if(id === 'tenses') { stopArcadeSystems(); stopZombies(); renderTensesList(); }
+      if(id === 'conv') { stopArcadeSystems(); stopZombies(); renderConvList(); }
+      if(id === 'comp') { stopArcadeSystems(); stopZombies(); updateComp(); }
+      if(id === 'arcade') { stopZombies(); initArcade(); startArcadeSystems(); }
+      if(id === 'zombies') { stopArcadeSystems(); initZombies(); }
+    }
+
+    // MEMORIA
+    function initMatch() {
+      const grid = document.getElementById('match-grid'); grid.innerHTML = '';
+      let allVocab = [];
+      Object.values(VOCAB).forEach(cat => allVocab.push(...cat));
+      allVocab.sort(() => Math.random() - 0.5);
+      
+      let cards = [];
+      const selectedVocab = allVocab.slice(0, 6);
+      selectedVocab.forEach(v => {
+        cards.push({ id: v.en, type:'text', val: v.en });
+        cards.push({ id: v.en, type:'icon', val: v.icon });
+      });
+      cards.sort(() => Math.random() - 0.5);
+      state.mFlipped = []; state.mSolved = [];
+      cards.forEach((c) => {
+        const div = document.createElement('div');
+        div.className = "card-match bg-white h-24 rounded-xl border-2 flex items-center justify-center text-2xl shadow-sm";
+        div.innerHTML = "?";
+        div.onclick = () => {
+          if(state.mFlipped.length >= 2 || div.classList.contains('solved') || div.innerText !== '?') return;
+          div.innerHTML = c.type === 'text' ? `<span class="text-[10px] font-bold uppercase p-1">${c.val}</span>` : c.val;
+          div.classList.add('border-indigo-500', 'text-indigo-600');
+          state.mFlipped.push({ div, c });
+          if(c.type === 'text') speak(c.val);
+          if(state.mFlipped.length === 2) {
+            const [a, b] = state.mFlipped;
+            if(a.c.id === b.c.id) {
+              a.div.classList.add('solved', 'bg-emerald-50', 'border-emerald-200');
+              b.div.classList.add('solved', 'bg-emerald-50', 'border-emerald-200');
+              updateScore(20); state.mFlipped = [];
+            } else {
+              setTimeout(() => {
+                a.div.innerText = b.div.innerText = "?";
+                a.div.classList.remove('border-indigo-500', 'text-indigo-600');
+                b.div.classList.remove('border-indigo-500', 'text-indigo-600');
+                state.mFlipped = [];
+              }, 800);
+            }
+          }
+        };
+        grid.appendChild(div);
+      });
+    }
+
+    // PRONUNCIAR
+    function renderPronounceCategories() {
+      const container = document.getElementById('p-cat-container');
+      container.innerHTML = '';
+      Object.keys(VOCAB).forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-full transition-all shadow-sm ${state.pCategory === cat ? 'bg-indigo-600 text-white' : 'bg-white text-slate-500 border hover:bg-slate-50'}`;
+        btn.innerText = cat;
+        btn.onclick = () => {
+          state.pCategory = cat;
+          state.pIdx = 0;
+          renderPronounceCategories();
+          updatePronounce();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function updatePronounce() {
+      const catList = VOCAB[state.pCategory];
+      const v = catList[state.pIdx];
+      document.getElementById('p-word').innerText = v.en;
+      document.getElementById('p-img').src = v.img;
+      document.getElementById('p-count').innerText = `${state.pIdx + 1} / ${catList.length}`;
+      document.getElementById('p-feedback').innerText = '...';
+      document.getElementById('p-feedback').style.color = '';
+    }
+    function changeWord(n) { 
+      const catList = VOCAB[state.pCategory];
+      state.pIdx = (state.pIdx + n + catList.length) % catList.length; 
+      updatePronounce(); 
+    }
+    function speakWord() { speak(VOCAB[state.pCategory][state.pIdx].en); }
+
+    // TIEMPOS
+    function renderTensesList() {
+      const list = document.getElementById('t-list'); list.innerHTML = '';
+      TENSES_DATA.forEach((t, i) => {
+        const b = document.createElement('button');
+        b.className = `w-full text-left p-3 rounded-xl mb-1 flex items-center gap-3 text-xs font-bold transition-all ${state.tIdx === i ? 'bg-indigo-50 text-indigo-700 border-indigo-200 border' : 'text-slate-500 hover:bg-slate-50'}`;
+        b.innerHTML = `<span>${t.icon}</span> ${t.name}`;
+        b.onclick = () => { state.tIdx = i; state.tExIdx = 0; renderTensesList(); loadTenseExercise(); };
+        list.appendChild(b);
+      });
+      if(document.getElementById('t-title').innerText === "...") loadTenseExercise();
+    }
+
+    function loadTenseExercise() {
+      const sentence = TENSES_DATA[state.tIdx].examples[state.tExIdx];
+      document.getElementById('t-title').innerText = TENSES_DATA[state.tIdx].name;
+      document.getElementById('t-icon-box').innerText = TENSES_DATA[state.tIdx].icon;
+      document.getElementById('t-ex-count').innerText = `Ejemplo ${state.tExIdx + 1} de ${TENSES_DATA[state.tIdx].examples.length}`;
+      document.getElementById('t-ordered').innerHTML = '';
+      document.getElementById('t-feedback').innerText = '...';
+      document.getElementById('t-feedback').style.color = '';
+      document.getElementById('btn-check-tense').classList.remove('hidden');
+      document.getElementById('btn-voice-tense').classList.add('hidden');
+      state.tUserOrder = [];
+      
+      const words = sentence.split(' ').sort(() => Math.random() - 0.5);
+      const box = document.getElementById('t-scrambled'); box.innerHTML = '';
+      words.forEach(w => {
+        const b = document.createElement('button');
+        b.className = "bg-white px-3 py-2 rounded-xl border shadow-sm font-bold text-slate-600 hover:border-indigo-400";
+        b.innerText = w;
+        b.onclick = () => { state.tUserOrder.push(w); b.classList.add('hidden'); renderOrderedWords(); };
+        box.appendChild(b);
+      });
+    }
+
+    function renderOrderedWords() {
+      const box = document.getElementById('t-ordered'); box.innerHTML = '';
+      state.tUserOrder.forEach((w, i) => {
+        const b = document.createElement('button');
+        b.className = "bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold shadow-md";
+        b.innerText = w;
+        b.onclick = () => {
+          state.tUserOrder.splice(i, 1);
+          const hidden = Array.from(document.getElementById('t-scrambled').children).find(c => c.innerText === w && c.classList.contains('hidden'));
+          if(hidden) hidden.classList.remove('hidden');
+          renderOrderedWords();
+        };
+        box.appendChild(b);
+      });
+    }
+
+    function checkTense() {
+      const target = TENSES_DATA[state.tIdx].examples[state.tExIdx];
+      if(state.tUserOrder.join(' ') === target) {
+        document.getElementById('t-ordered').classList.add('tense-success');
+        setTimeout(() => document.getElementById('t-ordered').classList.remove('tense-success'), 1000);
+        speak(target); updateScore(50);
+        document.getElementById('btn-check-tense').classList.add('hidden');
+        document.getElementById('btn-voice-tense').classList.remove('hidden');
+      } else {
+        document.getElementById('t-feedback').innerText = "Orden incorrecto, revisa la posición.";
+        document.getElementById('t-feedback').style.color = "#ef4444";
+      }
+    }
+
+    function nextTenseExample() {
+      state.tExIdx = (state.tExIdx + 1) % TENSES_DATA[state.tIdx].examples.length;
+      loadTenseExercise();
+    }
+    function speakTense() { speak(TENSES_DATA[state.tIdx].examples[state.tExIdx]); }
+
+    // CONVERSACIONES REALES
+    function renderConvList() {
+      const list = document.getElementById('cv-list'); list.innerHTML = '';
+      TENSES_DATA.forEach((t, tIndex) => {
+        const header = document.createElement('div');
+        header.className = "text-[10px] font-black uppercase text-indigo-400 mt-4 mb-2 tracking-widest pl-2";
+        header.innerText = t.name;
+        list.appendChild(header);
+
+        t.conversations.forEach((conv, cIndex) => {
+          const b = document.createElement('button');
+          const isSelected = state.cvTenseIdx === tIndex && state.cvIdx === cIndex;
+          b.className = `w-full text-left p-3 rounded-xl mb-1 flex items-center gap-3 text-xs font-bold transition-all ${isSelected ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50 border'}`;
+          b.innerHTML = `<span>💬</span> ${conv.title}`;
+          b.onclick = () => { 
+            state.cvTenseIdx = tIndex; state.cvIdx = cIndex; state.cvRole = null; 
+            renderConvList(); loadConversationUI(); 
+          };
+          list.appendChild(b);
+        });
+      });
+      if(document.getElementById('cv-subtitle').innerText === "...") loadConversationUI();
+    }
+
+    function loadConversationUI() {
+      const conv = TENSES_DATA[state.cvTenseIdx].conversations[state.cvIdx];
+      document.getElementById('cv-title').innerText = conv.title;
+      document.getElementById('cv-subtitle').innerText = TENSES_DATA[state.cvTenseIdx].name;
+      
+      const roleSelector = document.getElementById('cv-role-selector');
+      roleSelector.classList.remove('hidden');
+      document.getElementById('btn-role-A').className = "px-4 py-1 text-sm font-bold rounded-md transition-all text-slate-500 hover:bg-white";
+      document.getElementById('btn-role-B').className = "px-4 py-1 text-sm font-bold rounded-md transition-all text-slate-500 hover:bg-white";
+
+      const chatBox = document.getElementById('cv-chat-box');
+      chatBox.innerHTML = '';
+      
+      if(!state.cvRole) {
+        chatBox.innerHTML = '<div class="text-center text-slate-400 font-bold mt-20">👈 Selecciona arriba qué Rol (A o B) quieres actuar.</div>';
+        document.getElementById('cv-mic-btn').classList.add('hidden');
+        document.getElementById('cv-feedback').classList.add('hidden');
+        document.getElementById('cv-reset-btn').classList.add('hidden');
+        return;
+      }
+
+      conv.dialogue.forEach((line, index) => {
+        const isUser = line.role === state.cvRole;
+        const div = document.createElement('div');
+        div.id = `cv-line-${index}`;
+        // Burbujas un poco más compactas (p-3 y text-base) para aprovechar el espacio
+        div.className = isUser 
+          ? "chat-bubble self-end bg-indigo-500 text-white rounded-2xl rounded-br-none p-3 max-w-[85%] shadow-sm"
+          : "chat-bubble self-start bg-white text-slate-700 border border-slate-200 rounded-2xl rounded-bl-none p-3 max-w-[85%] shadow-sm";
+        div.innerHTML = `<div class="text-[10px] font-black uppercase mb-1 ${isUser ? 'text-indigo-200' : 'text-slate-400'}">Persona ${line.role}</div><div class="font-bold text-base sm:text-lg">${line.text}</div>`;
+        chatBox.appendChild(div);
+      });
+
+      state.cvLineIdx = 0;
+      document.getElementById('cv-reset-btn').classList.remove('hidden');
+      document.getElementById('cv-feedback').classList.remove('hidden');
+      document.getElementById('cv-feedback').innerText = "Prepárate...";
+      document.getElementById('cv-feedback').style.color = "";
+      setTimeout(advanceConversation, 800);
+    }
+
+    function setConvRole(role) {
+      state.cvRole = role;
+      document.getElementById('btn-role-A').classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+      document.getElementById('btn-role-B').classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+      document.getElementById(`btn-role-${role}`).classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+      loadConversationUI();
+    }
+
+    function advanceConversation() {
+      const conv = TENSES_DATA[state.cvTenseIdx].conversations[state.cvIdx];
+      const chatBox = document.getElementById('cv-chat-box');
+      const micBtn = document.getElementById('cv-mic-btn');
+      const feedback = document.getElementById('cv-feedback');
+
+      if(state.cvLineIdx >= conv.dialogue.length) {
+        micBtn.classList.add('hidden');
+        feedback.innerText = "¡Conversación completada!";
+        feedback.style.color = "#10b981";
+        updateScore(150); 
+        return;
+      }
+
+      const currentLine = conv.dialogue[state.cvLineIdx];
+      const bubble = document.getElementById(`cv-line-${state.cvLineIdx}`);
+      
+      bubble.classList.add('chat-active');
+      bubble.classList.remove('opacity-50', 'filter', 'grayscale');
+      
+      // Auto-Scroll suave hacia el globo activo
+      setTimeout(() => {
+         chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' });
+      }, 50);
+
+      if(currentLine.role !== state.cvRole) {
+        micBtn.classList.add('hidden');
+        feedback.innerText = "La otra persona está hablando...";
+        feedback.style.color = "#64748b";
+        speak(currentLine.text, () => {
+          bubble.classList.remove('chat-active');
+          bubble.classList.add('chat-done');
+          state.cvLineIdx++;
+          setTimeout(advanceConversation, 500); 
+        });
+      } else {
+        micBtn.classList.remove('hidden');
+        feedback.innerText = "¡Es tu turno! Toca el micrófono y lee el mensaje azul.";
+        feedback.style.color = "#4f46e5";
+      }
+    }
+
+    function resetConversation() { window.speechSynthesis.cancel(); loadConversationUI(); }
+
+    // MUNDOS ARCADE Y ZOMBIES (MÚSICA, TRAMPAS Y ENEMIGOS MÓVILES)
+    let audioCtx = null;
+    let musicTimeout = null;
+    let trapInterval = null;
+    let enemyInterval = null;
+    let melodyIdx = 0;
+    let isPlayingMusic = false;
+    let isMuted = false;
+
+    // Frecuencias musicales extendidas para incluir notas graves (para los zombies)
+    const N = {
+      A2: 110.00, B2: 123.47, C3: 130.81, D3: 146.83, E3: 164.81, F3: 174.61, G3: 196.00, A3: 220.00, B3: 246.94,
+      C4: 261.63, C4s: 277.18, D4: 293.66, Eb4: 311.13, E4: 329.63, F4: 349.23, F4s: 369.99, G4: 392.00, Ab4: 415.30, A4: 440.00, Bb4: 466.16, B4: 493.88,
+      C5: 523.25, C5s: 554.37, D5: 587.33, Eb5: 622.25, E5: 659.25, F5: 698.46, F5s: 739.99, G5: 783.99, Ab5: 830.61, A5: 880.00, Bb5: 932.33, B5: 987.77,
+      C6: 1046.50
+    };
+
+    const melody = [
+      {f:N.E5, d:0.1, w:0.15}, {f:N.E5, d:0.1, w:0.3}, {f:N.E5, d:0.1, w:0.3}, {f:N.C5, d:0.1, w:0.15}, {f:N.E5, d:0.1, w:0.3}, {f:N.G5, d:0.1, w:0.6}, {f:N.G4, d:0.1, w:0.6},
+      {f:N.C5, d:0.15, w:0.45}, {f:N.G4, d:0.15, w:0.45}, {f:N.E4, d:0.15, w:0.45}, {f:N.A4, d:0.1, w:0.3}, {f:N.B4, d:0.1, w:0.3}, {f:N.Bb4, d:0.1, w:0.15}, {f:N.A4, d:0.1, w:0.3},
+      {f:N.G4, d:0.1, w:0.2}, {f:N.E5, d:0.1, w:0.2}, {f:N.G5, d:0.1, w:0.2}, {f:N.A5, d:0.15, w:0.3}, {f:N.F5, d:0.1, w:0.15}, {f:N.G5, d:0.1, w:0.3}, {f:N.E5, d:0.1, w:0.3}, {f:N.C5, d:0.1, w:0.15}, {f:N.D5, d:0.1, w:0.15}, {f:N.B4, d:0.1, w:0.45},
+      {f:N.C5, d:0.15, w:0.45}, {f:N.G4, d:0.15, w:0.45}, {f:N.E4, d:0.15, w:0.45}, {f:N.A4, d:0.1, w:0.3}, {f:N.B4, d:0.1, w:0.3}, {f:N.Bb4, d:0.1, w:0.15}, {f:N.A4, d:0.1, w:0.3},
+      {f:N.G4, d:0.1, w:0.2}, {f:N.E5, d:0.1, w:0.2}, {f:N.G5, d:0.1, w:0.2}, {f:N.A5, d:0.15, w:0.3}, {f:N.F5, d:0.1, w:0.15}, {f:N.G5, d:0.1, w:0.3}, {f:N.E5, d:0.1, w:0.3}, {f:N.C5, d:0.1, w:0.15}, {f:N.D5, d:0.1, w:0.15}, {f:N.B4, d:0.1, w:0.45},
+      {f:N.G5, d:0.1, w:0.15}, {f:N.F5s, d:0.1, w:0.15}, {f:N.F5, d:0.1, w:0.15}, {f:N.Eb5, d:0.15, w:0.3}, {f:N.E5, d:0.1, w:0.3}, {f:N.Ab4, d:0.1, w:0.15}, {f:N.A4, d:0.1, w:0.15}, {f:N.C5, d:0.1, w:0.3}, {f:N.A4, d:0.1, w:0.15}, {f:N.C5, d:0.1, w:0.15}, {f:N.D5, d:0.1, w:0.45},
+      {f:N.Eb5, d:0.15, w:0.45}, {f:N.D5, d:0.15, w:0.45}, {f:N.C5, d:0.2, w:0.9}
+    ];
+
+    // Melodía misteriosa y lenta para Zombies
+    const zMelody = [
+      {f:N.A2, d:0.2, w:0.5}, {f:N.E3, d:0.2, w:0.5}, {f:N.A2, d:0.2, w:0.5}, {f:N.C3, d:0.2, w:0.5},
+      {f:N.A2, d:0.2, w:0.5}, {f:N.F3, d:0.2, w:0.5}, {f:N.A2, d:0.2, w:0.5}, {f:N.E3, d:0.2, w:0.5},
+      {f:N.D3, d:0.2, w:0.5}, {f:N.A3, d:0.2, w:0.5}, {f:N.D3, d:0.2, w:0.5}, {f:N.F3, d:0.2, w:0.5},
+      {f:N.E3, d:0.4, w:1.0}, {f:N.B2, d:0.4, w:1.0}
+    ];
+
+    let zMusicTimeout = null;
+    let zMelodyIdx = 0;
+    let isZPlayingMusic = false;
+    let isZMuted = false;
+
+    function initAudio() {
+      if(!audioCtx) { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playTone(freq, duration, type='square', vol=0.05) {
+      if(!audioCtx || isMuted) return;
+      try {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = type; o.frequency.value = freq;
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        g.gain.setValueAtTime(vol, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        o.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    function playNextNote() {
+      if(isMuted || !isPlayingMusic) return;
+      let n = melody[melodyIdx];
+      if(n.f > 0) playTone(n.f, n.d, 'square', 0.03);
+      melodyIdx = (melodyIdx + 1) % melody.length;
+      musicTimeout = setTimeout(playNextNote, n.w * 1000);
+    }
+
+    function startArcadeSystems() {
+      if(!isMuted && !isPlayingMusic) {
+         initAudio();
+         isPlayingMusic = true;
+         if(melodyIdx === 0) melodyIdx = 0;
+         playNextNote();
+      }
+      
+      if(trapInterval) clearInterval(trapInterval);
+      trapInterval = setInterval(() => {
+        if(state.arModal || state.arLives <= 0 || state.arLvl >= ARCADE_LEVELS.length) return;
+        state.arTrapActive = !state.arTrapActive; // Alterna entre Fuego y Electricidad
+        renderArcade();
+        checkTrapCollision();
+      }, 1500);
+
+      if(enemyInterval) clearInterval(enemyInterval);
+      enemyInterval = setInterval(() => {
+        updateEnemies();
+      }, 800);
+    }
+
+    function stopArcadeSystems() {
+      isPlayingMusic = false;
+      if(musicTimeout) { clearTimeout(musicTimeout); musicTimeout = null; }
+      if(trapInterval) { clearInterval(trapInterval); trapInterval = null; }
+      if(enemyInterval) { clearInterval(enemyInterval); enemyInterval = null; }
+    }
+
+    function toggleMusic() {
+      isMuted = !isMuted;
+      document.getElementById('btn-mute').innerText = isMuted ? "🔇" : "🔊";
+      if(isMuted) {
+         isPlayingMusic = false;
+         if(musicTimeout) { clearTimeout(musicTimeout); musicTimeout = null; }
+      } else {
+         startArcadeSystems();
+      }
+    }
+
+    function playNextZNote() {
+      if(isZMuted || !isZPlayingMusic || !zState.active) return;
+      let n = zMelody[zMelodyIdx];
+      // Usamos onda triangular (triangle) que da un tono más espeluznante y oscuro
+      if(n.f > 0) playTone(n.f, n.d, 'triangle', 0.08); 
+      zMelodyIdx = (zMelodyIdx + 1) % zMelody.length;
+      zMusicTimeout = setTimeout(playNextZNote, n.w * 1000);
+    }
+
+    function startZMusic() {
+      if(!isZMuted && !isZPlayingMusic) {
+         initAudio();
+         isZPlayingMusic = true;
+         if(zMelodyIdx === 0) zMelodyIdx = 0;
+         playNextZNote();
+      }
+    }
+
+    function stopZMusic() {
+      isZPlayingMusic = false;
+      if(zMusicTimeout) { clearTimeout(zMusicTimeout); zMusicTimeout = null; }
+    }
+
+    function toggleZMusic() {
+      isZMuted = !isZMuted;
+      document.getElementById('btn-z-mute').innerText = isZMuted ? "🔇" : "🔊";
+      if(isZMuted) {
+         stopZMusic();
+      } else {
+         startZMusic();
+      }
+    }
+
+    function sfxCoin() { playTone(987.77, 0.1, 'square', 0.08); setTimeout(() => playTone(1318.51, 0.3, 'square', 0.08), 100); }
+    function sfxCorrect() { playTone(440, 0.1, 'sine', 0.1); setTimeout(()=>playTone(554, 0.1, 'sine', 0.1), 100); setTimeout(()=>playTone(659, 0.2, 'sine', 0.1), 200); }
+    function sfxWrong() { playTone(150, 0.4, 'sawtooth', 0.1); }
+    function sfxJump() { playTone(300, 0.1, 'sine', 0.05); setTimeout(()=>playTone(400, 0.1, 'sine', 0.05), 50); }
+    function sfxZap() { playTone(100, 0.1, 'sawtooth', 0.1); setTimeout(() => playTone(200, 0.1, 'sawtooth', 0.1), 100); setTimeout(() => playTone(50, 0.15, 'sawtooth', 0.1), 200); }
+    function sfxFire() { playTone(100, 0.3, 'triangle', 0.1); }
+
+    function initArcade() {
+      if (state.arLvl >= ARCADE_LEVELS.length) {
+        document.getElementById('ar-board').innerHTML = '';
+        document.getElementById('ar-bg-container').innerHTML = '<div class="absolute inset-0 flex flex-col items-center justify-center text-white p-4 text-center z-30 bg-indigo-900"><div class="text-4xl mb-2 coin-anim">🏆</div><h3 class="font-black text-xl text-amber-400">¡Juego Completado!</h3><p class="text-xs text-white mt-2 font-bold">Eres un Maestro del Inglés.</p><button onclick="window.location.reload()" class="mt-6 bg-indigo-500 px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-400 transition-all">Jugar de nuevo</button></div>';
+        document.getElementById('ar-title').innerText = "THE END";
+        document.getElementById('ar-subtitle').innerText = "Winner";
+        return;
+      }
+      
+      const level = ARCADE_LEVELS[state.arLvl];
+      document.getElementById('ar-title').innerText = level.name;
+      document.getElementById('ar-subtitle').innerText = level.subtitle;
+      
+      const bg = document.getElementById('ar-bg-container');
+      bg.className = `block overflow-hidden rounded-xl shadow-[inset_0_0_20px_rgba(0,0,0,0.5)] relative mx-auto w-full h-[400px] transition-colors duration-500 ${level.theme}`;
+      
+      updateArcadeLives();
+      state.arMap = JSON.parse(JSON.stringify(level.map)); 
+      state.arEnemies = [];
+      state.arDir = 1; 
+      state.arTrapActive = false;
+
+      const board = document.getElementById('ar-board');
+      // Aumentamos los tiles de 40px a 50px para compensar el contenedor más grande y mantener el scrolling
+      board.style.gridTemplateColumns = `repeat(${state.arMap[0].length}, 50px)`;
+      board.style.gridTemplateRows = `repeat(${state.arMap.length}, 50px)`;
+      board.style.width = `${state.arMap[0].length * 50}px`;
+      board.style.height = `${state.arMap.length * 50}px`;
+
+      for(let y=0; y<state.arMap.length; y++) {
+        for(let x=0; x<state.arMap[y].length; x++) {
+          if(state.arMap[y][x] === 4) { state.arP = {x, y}; state.arMap[y][x] = 0; }
+          if(state.arMap[y][x] === 12) { 
+             state.arEnemies.push({x: x, y: y, dx: 1}); 
+             state.arMap[y][x] = 0; // Borramos del mapa base para controlarlo dinámico
+          }
+        }
+      }
+      renderArcade();
+    }
+
+    function renderArcade() {
+      const board = document.getElementById('ar-board');
+      board.innerHTML = '';
+      const level = ARCADE_LEVELS[state.arLvl];
+      
+      const TILES = { 
+        0: `<div class="${level.floorStyle} w-full h-full"></div>`, 
+        1: `<div class="w-full h-full ${level.wallStyle} border-[3px] shadow-[inset_0_2px_4px_rgba(255,255,255,0.4)] rounded-sm"></div>`, 
+        2: `<div class="w-[42px] h-[42px] bg-gradient-to-b from-amber-400 to-amber-600 border-[3px] border-amber-800 rounded-md shadow-md flex items-center justify-center text-white font-black text-2xl font-mono coin-anim z-10 relative">?</div>`, 
+        3: `<div class="text-[36px] drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] animate-bounce z-10 relative">👾</div>`, 
+        5: `<div class="text-[40px] drop-shadow-[0_0_15px_gold] z-10 relative">🏰</div>`, 
+        6: `<div class="w-[26px] h-[26px] bg-yellow-400 rounded-full border-[3px] border-yellow-600 shadow-[0_0_10px_yellow] coin-anim flex items-center justify-center z-10 relative"><div class="w-2 h-4 bg-yellow-600 rounded-sm"></div></div>`, 
+        7: `<div class="text-[38px] opacity-70">☁️</div>`, 
+        8: `<div class="w-full h-full bg-black/50 rounded-full blur-[2px]"></div>`, 
+        9: `<div class="w-full h-full bg-emerald-600 border-t-4 border-emerald-500 shadow-[inset_0_4px_10px_rgba(0,0,0,0.3)]"></div>`,
+        10: state.arTrapActive 
+             ? `<div class="relative w-full h-full flex items-center justify-center bg-cyan-900/40 rounded-md shadow-[0_0_15px_cyan] overflow-hidden"><div class="absolute inset-0 bg-cyan-400/50 zap-anim"></div><div class="text-[34px] filter drop-shadow-[0_0_10px_white] relative z-10 scale-125">⚡</div></div>`
+             : `<div class="w-full h-full flex items-center justify-center bg-slate-800/80 rounded-md border border-slate-700 shadow-inner relative"><div class="w-4 h-4 bg-cyan-900 rounded-full"></div></div>`,
+        11: !state.arTrapActive 
+             ? `<div class="relative w-full h-full flex items-center justify-center"><div class="text-[36px] drop-shadow-[0_0_15px_red] fire-anim relative z-10">🔥</div></div>`
+             : `<div class="w-full h-full flex items-center justify-center bg-red-900/30 rounded-md border border-red-800/50 relative"><div class="w-3 h-3 bg-orange-600 rounded-full"></div></div>`
+      };
+      
+      // Matriz de render con el mapa
+      let renderGrid = JSON.parse(JSON.stringify(state.arMap));
+
+      // Añadir enemigos a la matriz de render
+      state.arEnemies.forEach(e => {
+         renderGrid[e.y][e.x] = 12; // 12 es Fantasma en tiempo de render
+      });
+
+      for(let y=0; y<renderGrid.length; y++) {
+        for(let x=0; x<renderGrid[y].length; x++) {
+          const div = document.createElement('div');
+          // Aumentado a 50x50
+          div.className = "flex items-center justify-center w-[50px] h-[50px] relative";
+          
+          let cellVal = renderGrid[y][x];
+          
+          if (state.arP.x === x && state.arP.y === y) {
+            let baseFloor = cellVal === 10 ? TILES[10] : (cellVal === 11 ? TILES[11] : TILES[0]);
+            let playerGraphic = `<div class="absolute inset-0 flex items-center justify-center z-20">
+                                   <div class="absolute -bottom-1 w-6 h-3 bg-black/40 rounded-full blur-[2px]"></div>
+                                   <div class="text-[36px] relative z-20 drop-shadow-md" style="transform: scaleX(${state.arDir}) translateY(-2px);">🦸‍♂️</div>
+                                 </div>`;
+            div.innerHTML = baseFloor + playerGraphic;
+          } else if (cellVal === 12) {
+             let baseFloor = TILES[0]; 
+             let ghostGraphic = `<div class="absolute inset-0 flex items-center justify-center z-20"><div class="text-[36px] drop-shadow-[0_0_10px_purple] animate-pulse">👻</div></div>`;
+             div.innerHTML = baseFloor + ghostGraphic;
+          } else {
+            div.innerHTML = TILES[cellVal];
+          }
+          board.appendChild(div);
+        }
+      }
+      updateCamera();
+    }
+
+    function updateEnemies() {
+      if(state.arModal || state.arLives <= 0 || state.arEnemies.length === 0) return;
+      
+      let playerHit = false;
+      state.arEnemies.forEach(e => {
+        let nx = e.x + e.dx;
+        // Choca con bordes o paredes
+        if(nx < 0 || nx >= state.arMap[0].length || (state.arMap[e.y][nx] !== 0 && state.arMap[e.y][nx] !== 6 && state.arMap[e.y][nx] !== 10 && state.arMap[e.y][nx] !== 11)) {
+          e.dx *= -1; // Reversa
+          nx = e.x + e.dx;
+        }
+        
+        e.x = nx;
+        // Si choca con el jugador
+        if(e.x === state.arP.x && e.y === state.arP.y) playerHit = true;
+      });
+
+      renderArcade();
+
+      if(playerHit) {
+        sfxZap();
+        state.arLives--;
+        updateArcadeLives();
+        resetPlayerPosition();
+        if(state.arLives <= 0) triggerWarningModal("¡FANTASMA! 👻<br><br>Te quedaste sin vidas. Fin del juego.", true);
+        else triggerWarningModal(`¡CUIDADO! 👻<br><br>Un fantasma te ha atrapado. <strong class="text-red-400">Pierdes 1 vida.</strong>`);
+      }
+    }
+
+    function updateCamera() {
+      const board = document.getElementById('ar-board');
+      const container = document.getElementById('ar-bg-container');
+      const TILE_SIZE = 50; // Ajustado a la nueva medida
+      
+      // La cámara ahora toma el tamaño real del contenedor en la pantalla de cada usuario
+      const VIEW_W = container.clientWidth;
+      const VIEW_H = container.clientHeight;
+      const MAP_W = state.arMap[0].length * TILE_SIZE;
+      const MAP_H = state.arMap.length * TILE_SIZE;
+      
+      let tx = (VIEW_W / 2) - (state.arP.x * TILE_SIZE + TILE_SIZE / 2);
+      let ty = (VIEW_H / 2) - (state.arP.y * TILE_SIZE + TILE_SIZE / 2);
+      
+      // Lógica de centrado inteligente: Si el mapa es más pequeño que el contenedor, se centra. 
+      // Si no, activa el efecto de persecución restringido a los bordes.
+      if (MAP_W <= VIEW_W) {
+          tx = (VIEW_W - MAP_W) / 2;
+      } else {
+          if (tx > 0) tx = 0;
+          if (tx < VIEW_W - MAP_W) tx = VIEW_W - MAP_W;
+      }
+      
+      if (MAP_H <= VIEW_H) {
+          ty = (VIEW_H - MAP_H) / 2;
+      } else {
+          if (ty > 0) ty = 0;
+          if (ty < VIEW_H - MAP_H) ty = VIEW_H - MAP_H;
+      }
+      
+      board.style.transform = `translate(${tx}px, ${ty}px)`;
+    }
+
+    function checkTrapCollision() {
+      if(state.arLives <= 0 || state.arModal) return;
+      
+      let cell = state.arMap[state.arP.y][state.arP.x];
+      let hit = false;
+      let msg = "";
+
+      if(state.arTrapActive && cell === 10) {
+        sfxZap(); hit = true; msg = "Pisaste una trampa eléctrica ⚡";
+      } else if(!state.arTrapActive && cell === 11) {
+        sfxFire(); hit = true; msg = "Te quemaste con el fuego 🔥";
+      }
+
+      if(hit) {
+        state.arLives--;
+        updateArcadeLives();
+        resetPlayerPosition();
+        if(state.arLives <= 0) triggerWarningModal("¡ELIMINADO!<br><br>Te quedaste sin vidas. Fin del juego.", true);
+        else triggerWarningModal(`¡AY! <br><br>${msg}. <strong class="text-red-400">Pierdes 1 vida.</strong>`);
+      }
+    }
+
+    function resetPlayerPosition() {
+        const level = ARCADE_LEVELS[state.arLvl];
+        for(let y=0; y<level.map.length; y++) {
+          for(let x=0; x<level.map[y].length; x++) {
+            if(level.map[y][x] === 4) { state.arP = {x, y}; }
+          }
+        }
+        renderArcade();
+    }
+
+    function moveArcade(dx, dy) {
+      if (state.arModal || state.arLives <= 0 || state.arLvl >= ARCADE_LEVELS.length) return;
+      
+      initAudio(); 
+      if(dx !== 0) state.arDir = dx; 
+      
+      let nx = state.arP.x + dx;
+      let ny = state.arP.y + dy;
+      
+      if(ny < 0 || ny >= state.arMap.length || nx < 0 || nx >= state.arMap[0].length) return;
+      
+      let targetCell = state.arMap[ny][nx];
+      if(targetCell === 1 || targetCell === 8 || targetCell === 9) return; 
+      
+      // Chocar con fantasma (12 no está en el mapa base, está en el array, lo verificamos)
+      let hitGhost = state.arEnemies.find(e => e.x === nx && e.y === ny);
+      if(hitGhost) {
+         sfxZap(); state.arLives--; updateArcadeLives(); resetPlayerPosition();
+         if(state.arLives <= 0) triggerWarningModal("¡FANTASMA! 👻<br><br>Te quedaste sin vidas. Fin del juego.", true);
+         else triggerWarningModal(`¡CUIDADO! 👻<br><br>Un fantasma te ha atrapado. <strong class="text-red-400">Pierdes 1 vida.</strong>`);
+         return;
+      }
+
+      if(targetCell === 6) { 
+        sfxCoin(); updateScore(10); state.arMap[ny][nx] = 0;
+      } else if (targetCell === 0 || targetCell === 7 || targetCell === 10 || targetCell === 11) {
+        sfxJump();
+      }
+      
+      if(targetCell === 2 || targetCell === 3) {
+        triggerArcadeEvent(targetCell, nx, ny);
+        return;
+      }
+      
+      if(targetCell === 5) {
+        let remainingTasks = 0;
+        for(let r=0; r<state.arMap.length; r++) {
+          for(let c=0; c<state.arMap[r].length; c++) {
+            if(state.arMap[r][c] === 2 || state.arMap[r][c] === 3) remainingTasks++;
+          }
+        }
+        if(remainingTasks > 0) {
+          sfxWrong();
+          triggerWarningModal(`Te faltan <strong>${remainingTasks} misiones</strong> (❓ o 👾).<br><br>¡Complétalas todas para desbloquear la salida!`);
+          return;
+        }
+        speak("World complete!");
+        updateScore(300);
+        state.arLvl++;
+        initArcade();
+        return;
+      }
+      
+      state.arP = {x: nx, y: ny};
+      renderArcade();
+      checkTrapCollision();
+    }
+
+    function triggerWarningModal(msg, isGameOver = false) {
+      state.arModal = true;
+      const modal = document.getElementById('ar-modal');
+      const qBox = document.getElementById('ar-m-q');
+      const optBox = document.getElementById('ar-m-options');
+      const icon = document.getElementById('ar-m-icon');
+      const transBox = document.getElementById('ar-m-translation-box');
+      
+      transBox.classList.add('hidden');
+      icon.classList.remove('hidden');
+      
+      icon.innerText = isGameOver ? "☠️" : "🛑";
+      icon.className = "text-6xl mb-4 animate-bounce drop-shadow-lg";
+      
+      qBox.innerHTML = `<span class="text-amber-400 text-xl font-black uppercase retro-font tracking-widest">${isGameOver ? 'GAME OVER' : '¡ESPERA!'}</span><br><br><span class="text-white text-base">${msg}</span>`;
+      
+      optBox.innerHTML = '';
+      const btn = document.createElement('button');
+      btn.className = "bg-indigo-600 p-4 rounded-xl font-bold text-white hover:bg-indigo-500 shadow-lg transition-all text-sm uppercase tracking-widest mt-4 w-full";
+      btn.innerText = isGameOver ? "Reintentar Juego" : "Volver al mapa";
+      
+      btn.onclick = () => {
+         sfxJump();
+         if(isGameOver) {
+            state.arLives = 3; state.arLvl = 0; closeArcadeModal(); initArcade();
+         } else { closeArcadeModal(); }
+      };
+      optBox.appendChild(btn);
+      modal.classList.remove('hidden');
+    }
+
+    function triggerArcadeEvent(type, x, y) {
+      state.arModal = true;
+      state.arTarget = {x, y};
+      const modal = document.getElementById('ar-modal');
+      const qBox = document.getElementById('ar-m-q');
+      const optBox = document.getElementById('ar-m-options');
+      const icon = document.getElementById('ar-m-icon');
+      const transBox = document.getElementById('ar-m-translation-box');
+      const transEl = document.getElementById('ar-m-translation');
+      
+      optBox.innerHTML = '';
+      modal.classList.remove('hidden');
+      icon.className = "text-6xl mb-4 coin-anim drop-shadow-lg"; 
+      
+      let correctAns = ""; let options = [];
+      
+      if(type === 2) {
+         transBox.classList.add('hidden');
+         icon.classList.remove('hidden');
+         icon.innerText = "❓";
+         let allCats = Object.keys(VOCAB);
+         let randomCat = VOCAB[allCats[Math.floor(Math.random() * allCats.length)]];
+         let targetWord = randomCat[Math.floor(Math.random() * randomCat.length)];
+         
+         qBox.innerHTML = `Bloque Misterioso.<br><span class="text-[10px] text-amber-400 uppercase tracking-widest mt-2 block">Misión de Vocabulario</span>¿Qué palabra coincide con ${targetWord.icon}?`;
+         correctAns = targetWord.en;
+         
+         options.push(correctAns);
+         while(options.length < 3) {
+           let dCat = VOCAB[allCats[Math.floor(Math.random() * allCats.length)]];
+           let dWord = dCat[Math.floor(Math.random() * dCat.length)].en;
+           if(!options.includes(dWord)) options.push(dWord);
+         }
+      } else {
+         transBox.classList.remove('hidden');
+         icon.classList.add('hidden');
+         
+         let levelInfo = ARCADE_LEVELS[state.arLvl];
+         let tenseData = TENSES_DATA[levelInfo.tenseIdx];
+         
+         qBox.innerHTML = `<span class="text-[10px] text-amber-400 uppercase tracking-widest mt-2 block">Derrota al enemigo (👾) eligiendo en:</span><span class="text-white underline">${tenseData.name}</span>`;
+         
+         let availableCorrect = tenseData.examples.filter(s => !state.arUsedSentences.includes(s));
+         if(availableCorrect.length === 0) { state.arUsedSentences = []; availableCorrect = tenseData.examples; }
+         let correctSentence = availableCorrect[Math.floor(Math.random() * availableCorrect.length)];
+         state.arUsedSentences.push(correctSentence);
+         
+         transEl.classList.add('animate-pulse');
+         transEl.innerText = "Traduciendo... ⏳";
+         
+         fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(correctSentence)}`)
+            .then(res => res.json())
+            .then(data => {
+                transEl.classList.remove('animate-pulse');
+                transEl.innerText = `"${data[0][0][0]}"`;
+            })
+            .catch(err => {
+                transEl.classList.remove('animate-pulse');
+                transEl.innerText = "Traducción no disponible";
+            });
+         
+         correctAns = correctSentence;
+         options.push(correctAns);
+         
+         while(options.length < 3) {
+           let dIdx = Math.floor(Math.random() * TENSES_DATA.length);
+           if(dIdx !== levelInfo.tenseIdx) {
+             let dSent = TENSES_DATA[dIdx].examples[Math.floor(Math.random() * TENSES_DATA[dIdx].examples.length)];
+             if(!options.includes(dSent)) options.push(dSent);
+           }
+         }
+      }
+      
+      options.sort(() => Math.random() - 0.5);
+      
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "bg-slate-800 p-4 rounded-xl font-bold text-white hover:bg-indigo-600 border-2 border-slate-600 shadow-lg text-[13px] sm:text-[15px] transition-all text-left leading-snug";
+        btn.innerText = opt;
+        btn.onclick = () => {
+           if(opt === correctAns) {
+             sfxCorrect(); speak(correctAns); updateScore(100);
+             state.arMap[state.arTarget.y][state.arTarget.x] = 0; 
+             closeArcadeModal();
+           } else {
+             sfxWrong(); speak("Oh no!"); state.arLives--; updateArcadeLives();
+             btn.classList.replace('bg-slate-800', 'bg-red-600'); btn.classList.add('animate-pulse');
+             if(state.arLives <= 0) { setTimeout(() => triggerWarningModal("Te has quedado sin vidas.", true), 800); } 
+             else { setTimeout(() => closeArcadeModal(), 1000); }
+           }
+        };
+        optBox.appendChild(btn);
+      });
+    }
+
+    function closeArcadeModal() {
+      state.arModal = false;
+      document.getElementById('ar-modal').classList.add('hidden');
+      renderArcade();
+    }
+
+    function updateArcadeLives() { document.getElementById('ar-lives').innerText = `❤️ ${state.arLives}`; }
+
+    document.addEventListener('keydown', (e) => {
+      if (!document.getElementById('arcade-section').classList.contains('hidden')) {
+        if(e.key === 'ArrowUp' || e.key === 'w') { moveArcade(0, -1); e.preventDefault(); }
+        if(e.key === 'ArrowDown' || e.key === 's') { moveArcade(0, 1); e.preventDefault(); }
+        if(e.key === 'ArrowLeft' || e.key === 'a') { moveArcade(-1, 0); e.preventDefault(); }
+        if(e.key === 'ArrowRight' || e.key === 'd') { moveArcade(1, 0); e.preventDefault(); }
+      }
+    });
+
+    // --- SISTEMA DE AUDIO PERSISTENTE ---
+    let isMicPersistent = false;
+    async function requestPersistentMic() {
+       if(isMicPersistent) return;
+       try {
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+             await navigator.mediaDevices.getUserMedia({ audio: true });
+             isMicPersistent = true;
+          }
+       } catch (err) {
+          console.warn("Permiso de micrófono no persistente:", err);
+       }
+    }
+
+    // --- RECONOCIMIENTO GENERICO ---
+    let isRecognizing = false;
+
+    async function startVoice(type) {
+      if (isRecognizing) {
+        try { recognition.abort(); } catch(e) {}
+      }
+      isRecognizing = true;
+      
+      await requestPersistentMic(); // Pide/mantiene el permiso 
+      
+      const feedback = document.getElementById(type === 'pronounce' ? 'p-feedback' : 't-feedback');
+      const indicator = document.getElementById('t-listening-indicator');
+      if(!recognition) { isRecognizing = false; feedback.innerText = "Micrófono no soportado en esta vista."; feedback.style.color = "#ef4444"; return; }
+      if(type === 'tense') indicator.classList.remove('hidden');
+      feedback.innerText = "Escuchando..."; feedback.style.color = "#fbbf24";
+      try { recognition.start(); } catch (error) { console.warn("Reconocimiento ya activo.", error); }
+
+      recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript.toLowerCase().replace(/[.,!?;]/g, "").trim();
+        let target = type === 'pronounce' ? VOCAB[state.pCategory][state.pIdx].en.toLowerCase() : TENSES_DATA[state.tIdx].examples[state.tExIdx].toLowerCase().replace(/[.,!?;]/g, "").trim();
+        if(text === target || text.includes(target)) {
+          feedback.innerText = "¡Perfecto!"; feedback.style.color = "#10b981"; updateScore(100); speak("Excellent!");
+        } else {
+          feedback.innerText = `Escuché: "${text}"`; feedback.style.color = "#ef4444";
+        }
+      };
+      recognition.onend = () => { isRecognizing = false; if(type === 'tense') indicator.classList.add('hidden'); if(feedback.innerText === "Escuchando...") feedback.innerText = "..."; };
+      recognition.onerror = () => { isRecognizing = false; if(type === 'tense') indicator.classList.add('hidden'); feedback.innerText = "Error. Intenta de nuevo."; feedback.style.color = "#ef4444"; };
+    }
+
+    async function startConvVoice() {
+      if (isRecognizing) {
+        try { recognition.abort(); } catch(e) {}
+      }
+      isRecognizing = true;
+
+      await requestPersistentMic(); // Pide/mantiene el permiso
+
+      const feedback = document.getElementById('cv-feedback');
+      const indicator = document.getElementById('cv-listening-indicator');
+      const micBtn = document.getElementById('cv-mic-btn');
+      if(!recognition) { isRecognizing = false; feedback.innerText = "Micrófono no soportado."; feedback.style.color = "#ef4444"; return; }
+      indicator.classList.remove('hidden'); micBtn.classList.remove('animate-pulse');
+      feedback.innerText = "Escuchando tu turno..."; feedback.style.color = "#fbbf24";
+      try { recognition.start(); } catch (error) { console.warn("Reconocimiento ya activo.", error); }
+
+      recognition.onresult = (e) => {
+        const text = e.results[0][0].transcript.toLowerCase().replace(/[.,!?;']/g, "").trim();
+        const target = TENSES_DATA[state.cvTenseIdx].conversations[state.cvIdx].dialogue[state.cvLineIdx].text.toLowerCase().replace(/[.,!?;']/g, "").trim();
+        if(text === target || text.includes(target)) {
+          feedback.innerText = "¡Excelente!"; feedback.style.color = "#10b981"; updateScore(100);
+          document.getElementById(`cv-line-${state.cvLineIdx}`).classList.replace('chat-active', 'chat-done');
+          state.cvLineIdx++; setTimeout(advanceConversation, 1000);
+        } else {
+          feedback.innerText = `Intenta otra vez. Escuché: "${text}"`; feedback.style.color = "#ef4444";
+        }
+      };
+      recognition.onend = () => { isRecognizing = false; indicator.classList.add('hidden'); micBtn.classList.add('animate-pulse'); if(feedback.innerText === "Escuchando tu turno...") { feedback.innerText = "Presiona el micrófono."; feedback.style.color = "#4f46e5"; } };
+      recognition.onerror = () => { isRecognizing = false; indicator.classList.add('hidden'); micBtn.classList.add('animate-pulse'); feedback.innerText = "Error. Intenta de nuevo."; feedback.style.color = "#ef4444"; };
+    }
+
+    // COMPARATIVOS
+    function updateComp() {
+      const q = COMP_DATA[state.cIdx];
+      document.getElementById('c-progress').innerText = `Pregunta ${state.cIdx + 1} de ${COMP_DATA.length}`;
+      document.getElementById('c-type').innerText = q.type;
+      document.getElementById('c-adj').innerText = `[ ${q.adj} ]`;
+      document.getElementById('c-sentence').innerHTML = q.sentence.replace('{ans}', '<span id="c-blank" class="border-b-4 border-indigo-200 text-indigo-600 px-2">_____</span>');
+      const optBox = document.getElementById('c-options'); optBox.innerHTML = '';
+      const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+      shuffledOptions.forEach(o => {
+        const b = document.createElement('button');
+        b.className = "p-4 bg-white border-2 rounded-2xl font-bold text-slate-600 hover:border-indigo-400";
+        b.innerText = o;
+        b.onclick = () => {
+          document.querySelectorAll('#c-options button').forEach(btn => btn.disabled = true);
+          if(o === q.correct) {
+            b.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-700');
+            document.getElementById('c-blank').innerText = o; updateScore(50);
+            speak(q.sentence.replace('{ans}', q.correct));
+          } else {
+            b.classList.add('bg-red-50', 'border-red-500', 'text-red-700');
+            document.getElementById('c-blank').innerText = q.correct; speak(o);
+          }
+          document.getElementById('btn-next-comp').disabled = false;
+          document.getElementById('btn-next-comp').classList.replace('bg-slate-100', 'bg-indigo-600');
+          document.getElementById('btn-next-comp').classList.replace('text-slate-400', 'text-white');
+        };
+        optBox.appendChild(b);
+      });
+    }
+    function nextComp() {
+      state.cIdx = (state.cIdx + 1) % COMP_DATA.length;
+      document.getElementById('btn-next-comp').disabled = true;
+      document.getElementById('btn-next-comp').classList.replace('bg-indigo-600', 'bg-slate-100');
+      document.getElementById('btn-next-comp').classList.replace('text-white', 'text-slate-400');
+      updateComp();
+    }
+
+    function updateScore(n) { state.score += n; document.getElementById('scoreDisplay').innerText = `Puntos: ${state.score}`; }
+
+    // Listener para recalcular la cámara si el usuario rota el celular o redimensiona la ventana
+    window.addEventListener('resize', () => {
+        if (!document.getElementById('arcade-section').classList.contains('hidden')) {
+            updateCamera();
+        }
+    });
+
+    // --- LOGICA ZOMBIES VS PLANTS ---
+    let zState = {
+        active: false, lvl: 0, lives: 3, 
+        zDefeated: 0, zToSpawn: 0, zSpawned: 0,
+        zombies: [], loopId: null, lastTime: 0, spawnTimer: 0, sunTimer: 2000, combo: 0,
+        modalOpen: false, targetZId: null, baseSpeed: 0.05,
+        usedSentences: [], usedWrongSentences: []
+    };
+
+    function initZombies() {
+        zState.lvl = 0;
+        startZLevel();
+    }
+
+    function startZLevel() {
+        if (zState.lvl >= TENSES_DATA.length) {
+            zWinGame();
+            return;
+        }
+        zState.lives = 3;
+        zState.zDefeated = 0;
+        zState.zSpawned = 0;
+        zState.combo = 0;
+        zState.usedSentences = [];
+        zState.usedWrongSentences = [];
+        document.getElementById('z-combo').classList.add('hidden');
+        zState.zToSpawn = 6 + (zState.lvl * 2); 
+        zState.baseSpeed = 0.005 + (zState.lvl * 0.001); // ¡Aún más lentos! Velocidad base y escalado reducidos
+        zState.zombies = [];
+        zState.active = true;
+        zState.modalOpen = false;
+        zState.targetZId = null;
+        document.getElementById('z-container').innerHTML = '';
+        document.getElementById('z-projectiles').innerHTML = '';
+        
+        updateZHUD();
+        
+        if(zState.loopId) cancelAnimationFrame(zState.loopId);
+        zState.lastTime = performance.now();
+        zState.loopId = requestAnimationFrame(zLoop);
+        
+        initAudio(); 
+        startZMusic();
+    }
+
+    function updateZHUD() {
+        const tData = TENSES_DATA[zState.lvl];
+        document.getElementById('z-title').innerText = `NIVEL ${zState.lvl + 1}`;
+        document.getElementById('z-subtitle').innerText = tData.name;
+        document.getElementById('z-lives').innerText = `❤️ ${zState.lives}`;
+        document.getElementById('z-progress').innerText = `🧟 ${zState.zDefeated}/${zState.zToSpawn}`;
+        
+        const btnBomb = document.getElementById('btn-bomb');
+        if(state.score >= 300) {
+            btnBomb.classList.replace('opacity-50', 'opacity-100');
+            btnBomb.classList.replace('cursor-not-allowed', 'cursor-pointer');
+            btnBomb.innerHTML = '💣 Cherry Bomb <span class="text-[10px] bg-orange-800 px-2 py-0.5 rounded-full">¡Lista! (-300 pts)</span>';
+        } else {
+            btnBomb.classList.replace('opacity-100', 'opacity-50');
+            btnBomb.classList.replace('cursor-pointer', 'cursor-not-allowed');
+            let faltan = 300 - state.score;
+            btnBomb.innerHTML = `💣 Cherry Bomb <span class="text-[10px] bg-orange-900/80 px-2 py-0.5 rounded-full">Faltan ${faltan} pts</span>`;
+        }
+    }
+
+    function zLoop(timestamp) {
+        if(!zState.active) return;
+        let dt = timestamp - zState.lastTime;
+        zState.lastTime = timestamp;
+
+        if(!zState.modalOpen) {
+            zState.spawnTimer -= dt;
+            zState.sunTimer -= dt;
+
+            if(zState.spawnTimer <= 0 && zState.zSpawned < zState.zToSpawn) {
+                let l1 = zSpawnZombie(-1);
+                // Inmediatamente generamos el segundo zombie de la pareja si no hemos llegado al límite
+                if(zState.zSpawned < zState.zToSpawn) {
+                    zSpawnZombie(l1); 
+                }
+                zState.spawnTimer = 2500 + Math.random() * 2000; // Un poco más de tiempo de respiro entre parejas
+            }
+
+            if(zState.sunTimer <= 0) {
+                zSpawnSun();
+                zState.sunTimer = 3000 + Math.random() * 4000;
+            }
+
+            for(let i = zState.zombies.length - 1; i >= 0; i--) {
+                let z = zState.zombies[i];
+                z.x -= z.speed * dt;
+                
+                let el = document.getElementById(z.id);
+                if(el) el.style.left = `${z.x}%`;
+
+                if(z.x <= 8) {
+                    zDamageBase();
+                    zRemoveZombie(z.id, i);
+                }
+            }
+        }
+
+        if(zState.active) zState.loopId = requestAnimationFrame(zLoop);
+    }
+
+    function zSpawnZombie(forbiddenLane = -1) {
+        zState.zSpawned++;
+        let lane;
+        // Evitamos que salgan exactamente en la misma fila para que no se sobrepongan
+        do {
+            lane = Math.floor(Math.random() * 4);
+        } while (lane === forbiddenLane);
+
+        let isRunner = Math.random() > 0.8 && zState.lvl > 1; // 20% prob de vampiro veloz desde lvl 3
+        let id = 'z-' + Date.now() + '-' + Math.random();
+        let zObj = {
+            id: id, lane: lane, x: 100 + (Math.random() * 3), // Pequeño desfase en X para que no caminen idénticos
+            speed: (zState.baseSpeed + (Math.random() * 0.005)) * (isRunner ? 1.7 : 1)
+        };
+        zState.zombies.push(zObj);
+
+        let container = document.getElementById('z-container');
+        let el = document.createElement('div');
+        el.id = id;
+        el.className = `absolute text-5xl sm:text-6xl zombie-walk cursor-crosshair hover:scale-110 transition-transform ${isRunner ? 'drop-shadow-[0_0_15px_red]' : 'drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]'}`;
+        el.style.top = `calc(${lane * 25}% + 10px)`;
+        el.style.left = `100%`;
+        el.innerText = isRunner ? "🧛" : (Math.random() > 0.5 ? "🧟" : "🧟‍♂️");
+        
+        let ind = document.createElement('div');
+        ind.className = "absolute -top-4 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[9px] font-black px-1.5 py-0.5 rounded border border-black shadow-md opacity-80 pointer-events-none";
+        ind.innerText = "ATTACK";
+        el.appendChild(ind);
+
+        el.onclick = () => zClickZombie(zObj.id);
+        container.appendChild(el);
+        
+        return lane;
+    }
+
+    function zSpawnSun() {
+        const yard = document.getElementById('z-yard');
+        const sun = document.createElement('div');
+        sun.className = "absolute text-3xl sm:text-4xl cursor-pointer hover:scale-110 transition-transform z-40 spin-anim drop-shadow-[0_0_15px_yellow]";
+        sun.innerText = "☀️";
+        sun.style.left = `${20 + Math.random() * 70}%`;
+        sun.style.top = `-10%`;
+        yard.appendChild(sun);
+        
+        let posY = -10;
+        let targetY = 10 + Math.random() * 60;
+        
+        let fallInt = setInterval(() => {
+            if(!zState.active || zState.modalOpen) return;
+            posY += 0.3;
+            if(sun) sun.style.top = `${posY}%`;
+            if(posY >= targetY) {
+                clearInterval(fallInt);
+                setTimeout(() => { if(sun) sun.remove(); }, 4000);
+            }
+        }, 30);
+
+        sun.onclick = (e) => {
+            e.stopPropagation();
+            sfxCoin();
+            updateScore(25);
+            updateZHUD();
+            sun.innerText = "+25";
+            sun.classList.remove('spin-anim', 'hover:scale-110', 'cursor-pointer');
+            sun.className += " text-yellow-400 font-black text-2xl z-50 drop-shadow-md";
+            sun.style.transition = "all 0.6s cubic-bezier(0.25, 1, 0.5, 1)";
+            sun.style.transform = "translateY(-60px) scale(1.3)";
+            sun.style.opacity = "0";
+            setTimeout(() => { if(sun) sun.remove(); }, 600);
+            clearInterval(fallInt);
+        };
+    }
+
+    function zClickZombie(id) {
+        if(zState.modalOpen || !zState.active) return;
+        zState.targetZId = id;
+        zState.modalOpen = true;
+        
+        sfxJump();
+        updateZHUD(); // Refresh bomb btn
+        
+        const modal = document.getElementById('z-modal');
+        const qBox = document.getElementById('z-m-q');
+        const optBox = document.getElementById('z-m-options');
+        const transBox = document.getElementById('z-m-translation-box');
+        const transEl = document.getElementById('z-m-translation');
+        const iconEl = document.getElementById('z-m-icon');
+        
+        let tData = TENSES_DATA[zState.lvl];
+        
+        qBox.innerHTML = `<span class="text-lime-400 text-xs sm:text-sm uppercase tracking-widest block mb-2">Ataque Gramatical</span>Elige una oración correcta en:<br><span class="text-lg sm:text-xl text-white font-black bg-lime-900/50 px-4 py-1.5 rounded-xl border border-lime-700 mt-2 inline-block shadow-lg">${tData.name}</span>`;
+        
+        optBox.innerHTML = '';
+        
+        // --- SISTEMA ANTI-REPETICIÓN ---
+        let availableCorrect = tData.examples.filter(s => !zState.usedSentences.includes(s));
+        if(availableCorrect.length === 0) { zState.usedSentences = []; availableCorrect = tData.examples; }
+        
+        let correctSentence = availableCorrect[Math.floor(Math.random() * availableCorrect.length)];
+        zState.usedSentences.push(correctSentence);
+        
+        // --- SISTEMA DE TRADUCCIÓN DINÁMICA ---
+        transBox.classList.remove('hidden');
+        iconEl.classList.add('hidden'); // Ocultar icono para mostrar la traducción
+        transEl.classList.add('animate-pulse');
+        transEl.innerText = "Traduciendo... ⏳";
+        
+        // Usamos el traductor de Google sin claves para máxima velocidad
+        fetch(`https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(correctSentence)}`)
+            .then(res => res.json())
+            .then(data => {
+                transEl.classList.remove('animate-pulse');
+                transEl.innerText = `"${data[0][0][0]}"`;
+            })
+            .catch(err => {
+                transEl.classList.remove('animate-pulse');
+                transEl.innerText = "Traducción no disponible";
+            });
+
+        let options = [correctSentence];
+        
+        let availableWrong = [];
+        TENSES_DATA.forEach((t, rIdx) => {
+           if(rIdx !== zState.lvl) availableWrong.push(...t.examples);
+        });
+        availableWrong = availableWrong.filter(s => !zState.usedWrongSentences.includes(s));
+        
+        while(options.length < 4) {
+           if(availableWrong.length === 0) { 
+               zState.usedWrongSentences = []; 
+               TENSES_DATA.forEach((t, rIdx) => { if(rIdx !== zState.lvl) availableWrong.push(...t.examples); });
+           }
+           
+           let wIdx = Math.floor(Math.random() * availableWrong.length);
+           let wrongSentence = availableWrong[wIdx];
+           
+           if(!options.includes(wrongSentence)) {
+              options.push(wrongSentence);
+              zState.usedWrongSentences.push(wrongSentence);
+           }
+           availableWrong.splice(wIdx, 1); 
+        }
+        
+        options.sort(() => Math.random() - 0.5);
+        
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = "bg-stone-800 p-4 rounded-xl font-bold text-stone-200 border-2 border-stone-600 hover:bg-stone-700 hover:border-lime-500 shadow-lg text-[13px] sm:text-[15px] transition-all text-left w-full leading-snug";
+            btn.innerText = opt;
+            btn.onclick = () => zAnswer(opt === correctSentence, btn, opt);
+            optBox.appendChild(btn);
+        });
+        
+        modal.classList.remove('hidden');
+    }
+
+    function zAnswer(isCorrect, btn, sentenceText) {
+        if(isCorrect) {
+            sfxCorrect();
+            speak(sentenceText);
+            
+            zState.combo++;
+            let pts = 50 + (zState.combo * 10);
+            updateScore(pts);
+            
+            const comboEl = document.getElementById('z-combo');
+            if(zState.combo > 1) {
+                comboEl.innerText = `🔥 COMBO x${zState.combo}!`;
+                comboEl.classList.remove('hidden');
+            }
+            
+            let targetIdx = zState.zombies.findIndex(z => z.id === zState.targetZId);
+            if(targetIdx !== -1) {
+                let z = zState.zombies[targetIdx];
+                zShootEffect(z.lane);
+                setTimeout(() => {
+                    zRemoveZombie(zState.targetZId, targetIdx);
+                    zCheckLevelProgress();
+                }, 200); 
+            }
+            zCloseModal();
+        } else {
+            sfxWrong();
+            zState.combo = 0;
+            document.getElementById('z-combo').classList.add('hidden');
+            
+            btn.classList.replace('bg-stone-800', 'bg-red-900');
+            btn.classList.replace('border-stone-600', 'border-red-500');
+            btn.classList.add('animate-pulse');
+            
+            setTimeout(() => {
+                zCloseModal();
+                zDamageBase(); // Castigo: Pierde 1 vida inmediatamente si se equivoca
+            }, 800);
+        }
+    }
+
+    function zShootEffect(lane) {
+        const proj = document.createElement('div');
+        proj.className = "absolute w-4 h-4 bg-lime-400 rounded-full shadow-[0_0_15px_lime] z-30 pea-shoot border-2 border-lime-200";
+        proj.style.top = `calc(${lane * 25}% + 30px)`;
+        document.getElementById('z-projectiles').appendChild(proj);
+        setTimeout(() => proj.remove(), 250);
+    }
+
+    function zRemoveZombie(id, index) {
+        if(index > -1 && index < zState.zombies.length) zState.zombies.splice(index, 1);
+        let el = document.getElementById(id);
+        if(el) {
+            el.innerText = "💥";
+            el.classList.remove('zombie-walk');
+            setTimeout(() => el.remove(), 300);
+        }
+        zState.zDefeated++;
+        updateZHUD();
+    }
+
+    function zDamageBase() {
+        if(!zState.active) return;
+        sfxZap();
+        zState.lives--;
+        updateZHUD();
+        
+        const overlay = document.getElementById('z-damage-overlay');
+        overlay.classList.replace('bg-red-600/0', 'bg-red-600/50');
+        setTimeout(() => overlay.classList.replace('bg-red-600/50', 'bg-red-600/0'), 300);
+        
+        if(zState.lives <= 0) zGameOver();
+    }
+
+    function zCheckLevelProgress() {
+        if(zState.zDefeated >= zState.zToSpawn) {
+            sfxCorrect(); 
+            zState.active = false;
+            setTimeout(() => {
+                zState.lvl++;
+                startZLevel();
+            }, 1500);
+        }
+    }
+
+    function zCloseModal() {
+        zState.modalOpen = false;
+        document.getElementById('z-modal').classList.add('hidden');
+    }
+
+    function zGameOver() {
+        zState.active = false;
+        stopZMusic();
+        zState.modalOpen = true;
+        const modal = document.getElementById('z-modal');
+        const qBox = document.getElementById('z-m-q');
+        const optBox = document.getElementById('z-m-options');
+        const icon = document.getElementById('z-m-icon');
+        
+        // Ocultar la traducción y mostrar el icono grande
+        document.getElementById('z-m-translation-box').classList.add('hidden');
+        icon.classList.remove('hidden');
+        
+        icon.innerText = "🧠";
+        icon.className = "text-7xl mb-4 drop-shadow-[0_0_15px_rgba(239,68,68,0.5)] animate-pulse";
+        
+        qBox.innerHTML = `<span class="text-red-500 text-2xl font-black uppercase tracking-widest">LOS ZOMBIES ENTRARON</span><br><br><span class="text-white text-base">Perdiste todas tus vidas en el Nivel ${zState.lvl + 1}.</span>`;
+        
+        optBox.innerHTML = '';
+        const btn = document.createElement('button');
+        btn.className = "bg-stone-700 p-4 rounded-xl font-bold text-white hover:bg-stone-600 shadow-lg transition-all text-sm uppercase tracking-widest mt-4 w-full border-2 border-stone-500";
+        btn.innerText = "Reintentar Nivel";
+        btn.onclick = () => {
+            sfxJump();
+            icon.className = "text-7xl mb-4 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]";
+            icon.innerText = "🧟";
+            startZLevel(); // Reinicia el nivel
+        };
+        optBox.appendChild(btn);
+        modal.classList.remove('hidden');
+    }
+
+    function zWinGame() {
+        zState.active = false;
+        stopZMusic();
+        zState.modalOpen = true;
+        const modal = document.getElementById('z-modal');
+        
+        // Ocultar la traducción y mostrar el icono de trofeo
+        document.getElementById('z-m-translation-box').classList.add('hidden');
+        document.getElementById('z-m-icon').classList.remove('hidden');
+        
+        document.getElementById('z-m-icon').innerText = "🏆";
+        document.getElementById('z-m-q').innerHTML = `<span class="text-amber-400 text-3xl font-black uppercase tracking-widest">¡Jardín Seguro!</span><br><br><span class="text-white text-base">Has dominado los 16 tiempos verbales.</span>`;
+        document.getElementById('z-m-options').innerHTML = '<button onclick="initZombies(); zCloseModal();" class="bg-lime-600 p-4 rounded-xl font-bold text-white hover:bg-lime-500 w-full mt-4">Jugar de Nuevo</button>';
+        modal.classList.remove('hidden');
+    }
+
+    function zUseBomb() {
+        if(!zState.active || zState.modalOpen || state.score < 300 || zState.zombies.length === 0) return;
+        
+        sfxFire();
+        updateScore(-300);
+        updateZHUD();
+        
+        const overlay = document.getElementById('z-damage-overlay');
+        overlay.classList.replace('bg-red-600/0', 'bg-orange-500/80');
+        setTimeout(() => overlay.classList.replace('bg-orange-500/80', 'bg-red-600/0'), 400);
+
+        for(let i = zState.zombies.length - 1; i >= 0; i--) {
+            zRemoveZombie(zState.zombies[i].id, i);
+        }
+        setTimeout(zCheckLevelProgress, 500);
+    }
+
+    function stopZombies() {
+        zState.active = false;
+        stopZMusic();
+        if(zState.loopId) cancelAnimationFrame(zState.loopId);
+    }
+
+    window.onload = () => { COMP_DATA.sort(() => Math.random() - 0.5); showTab('match'); };
+  </script>
+</body>
+</html>
